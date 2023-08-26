@@ -1,0 +1,17 @@
+{# templates/user.html #}
+
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta property="og:title" content="{{tag}}"" />
+    <meta property="og:description" content="{{description}}" />
+    <meta property="og:image" content="{{image}}" />
+    <title>{{tag}}</title>
+  </head>
+  <body>
+    <script>
+      window.location.href = "https://discord.com/users/{{user}}";
+    </script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+httpx
+robyn==0.36.2
+discord.py
+python-dotenv
+lru-dict
+aiocache
+jinja2
+toml

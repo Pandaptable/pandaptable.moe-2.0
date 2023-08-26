@@ -1,0 +1,17 @@
+{# templates/guild.html #}
+
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta property="og:title" content="{{name}}" />
+    <meta property="og:description" content="{{description}}" />
+    <meta property="og:image" content="{{icon}}" />
+    <title>{name}</title>
+  </head>
+  <body>
+    <script>
+      window.location.href = "{{invite}}";
+    </script>
+  </body>
+</html>

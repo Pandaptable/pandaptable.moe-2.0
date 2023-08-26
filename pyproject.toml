@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "website"
+version = "0.3.0.oss0"
+description = "personal site"
+authors = ["sora <no-reply@6days9weeks.wtf>"]
+license = "MIT"
+
+[tool.black]
+line-length = 99
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+filter_files = true
+
+[tool.poetry.dependencies]
+python = "^3.9"
+"discord.py" = "^2.3.1"
+robyn = "^0.36.2"
+httpx = "^0.24.1"
+lru-dict = "^1.2.0"
+python-dotenv = "^1.0.0"
+aiocache = "^0.12.1"
+toml = "^0.10.2"
+Jinja2 = "^3.1.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
