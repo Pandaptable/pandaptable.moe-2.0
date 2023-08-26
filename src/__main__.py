@@ -24,7 +24,13 @@ async def shutdown_handler() -> None:
 
 @app.get("/", const=True)
 async def home():
-    return "Beep boop! I'm running!"
+    with open("templates/index.html", "r") as f:
+        html = f.read()
+    return Response(
+        status_code=200,
+        headers={"Content-Type": "text/html"},
+        body=html.encode(),
+    )
 
 
 @app.get("/version", const=True)
@@ -49,6 +55,24 @@ async def favicon():
         status_code=200,
         headers={"Content-Type": image_type},
         body=icon,
+    )
+
+@app.get("/fuck/:fuckery")
+async def fuck_everything(req: Request):
+    fuckery = req.path_params["fuckery"]
+    lmao = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789/+"
+    def check(word: str):
+        return all(i in lmao for i in word)
+    if check(fuckery):
+        context = {"x": fuckery.replace("+", " ")[1:]}
+        app.jinja_template.render_template(template_name="true.html", **context)
+    else:
+        with open("templates/false.html", "r") as f:
+            html = f.read()
+    return Response(
+        status_code=200,
+        headers={"Content-Type": "text/html"},
+        body=html.encode(),
     )
 
 
