@@ -7,6 +7,12 @@ from utils import Website
 
 app = Website(__file__)
 
+app.add_directory(
+    route="/",
+    directory_path="pandaptable.moe",
+    index_file="index.html",
+)
+
 
 @app.startup_handler
 async def startup() -> None:
@@ -20,11 +26,6 @@ async def startup() -> None:
 async def shutdown_handler() -> None:
     await app.client.close()
     logging.info("Shut down website & API")
-
-
-@app.get("/", const=True)
-async def home():
-    return app.jinja_template.render_template(template_name="index.html")
 
 
 @app.get("/version", const=True)
