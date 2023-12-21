@@ -65,7 +65,7 @@ class Website(Robyn):
         """Notifies owner that the website is online."""
         owner = await self.client.fetch_user(self.env["OWNER_ID"])
         await owner.send(
-            f"**[{discord.utils.format_dt(discord.utils.utcnow(), 'f')}]**\n> Website `v{self.version}` is now online!"
+            f"**[{discord.utils.format_dt(discord.utils.utcnow(), 'f')}]**\n> Website is now online!"
         )
 
     @cached(ttl=30, cache=SimpleMemoryCache)

@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "website"
-version = "0.3.0.oss0"
+name = "pandaptable.moe"
+version = "1.0.0"
 description = "personal site"
-authors = ["sora <no-reply@6days9weeks.wtf>"]
+authors = ["Pandaptable <panda@pandaptable.moe>"]
 license = "MIT"
 
 [tool.black]
