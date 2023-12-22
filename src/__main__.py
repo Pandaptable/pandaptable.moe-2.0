@@ -204,7 +204,7 @@ async def discord_contact_callback(OAUTH_DATA):
         connection = connectionsList[i]
         connectionType = connection['type']
         
-        if connectionType not in hashMap.keys:
+        if connectionType not in hashMap.values:
             hashMap[connectionType] = []
         hashMap[connectionType].append(connection)
         i = i + 1
