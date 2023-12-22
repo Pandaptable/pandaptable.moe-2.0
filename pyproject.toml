@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandaptable.moe"
-version = "1.0.0"
+version = "0.36.2"
 description = "personal site"
 authors = ["Pandaptable <panda@pandaptable.moe>"]
 license = "MIT"
