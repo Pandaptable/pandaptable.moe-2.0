@@ -179,7 +179,7 @@ def discord_contact(req: Request):
 
 
 @app.get("/contact/callback")
-def discord_contact_callback_parse(req: Request, state: state):
+def discord_contact_callback_parse(req: Request, state):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URL"], state=state, scope=app.env[OAUTH2_SCOPES])
     token = discord.fetch_token(
         "https://discord.com/api/oauth2/token",
@@ -187,7 +187,7 @@ def discord_contact_callback_parse(req: Request, state: state):
         authorization_response=req.url)
     return token
 
-def discord_contact_callback_data(token: token):
+def discord_contact_callback_data(token):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], token=token)
     user = discord.get('https://discord.com/api/users/@me').json()
     connections = discord.get('https://discord.com/api/users/@me/connections').json()
