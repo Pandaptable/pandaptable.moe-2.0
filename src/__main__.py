@@ -191,13 +191,14 @@ def discord_contact_callback_parse(req: Request):
         )
     data = discord_contact_callback_data(token)
     discord_contact_callback(data)
+    return "test"
 
 
 def discord_contact_callback_data(token):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], token=token)
     user = discord.get('https://discord.com/api/users/@me').json()
     connections = discord.get('https://discord.com/api/users/@me/connections').json()
-    OAUTH_DATA = json.dumps(user, connections)
+    OAUTH_DATA = json.dumps({"user": user, "connections": connections})
     return OAUTH_DATA
 
 async def discord_contact_callback(req: Request, OAUTH_DATA):
