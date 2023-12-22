@@ -173,14 +173,14 @@ async def embed_guild(req: Request):
 
 @app.get("/contact")
 async def discord_contact(req: Request):
-    oauth = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=redirect_uri, state=session['state'], scope=app.env[OAUTH2_SCOPES])
+    oauth = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URL"], state=session['state'], scope=app.env[OAUTH2_SCOPES])
     login_url, state = oauth.authorization_url(app.env[OAUTH2_REDIRECT_URL])
     return app.redirect(app.env["OAUTH2_REDIRECT_URL"]), state
 
 
 @app.get("/contact/callback")
 async def discord_contact_callback_parse(req: Request):
-    discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=redirect_uri, state=state, scope=app.env[OAUTH2_SCOPES])
+    discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URL"], state=state, scope=app.env[OAUTH2_SCOPES])
     token = discord.fetch_token(
         "https://discord.com/api/oauth2/token",
         client_secret=(app.env["OAUTH2_CLIENT_SECRET"]),
