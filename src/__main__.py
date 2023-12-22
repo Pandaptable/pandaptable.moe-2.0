@@ -1,6 +1,7 @@
 import logging
 
 import discord
+from requests_oauthlib import OAuth2Session
 from robyn import Request, Response
 
 from utils import Website
@@ -171,10 +172,26 @@ async def embed_guild(req: Request):
 
 @app.get("/contact")
 async def discord_contact(req: Request):
-    return app.redirect(f"https://discord.com/api/oauth2/authorize?client_id=1145115157194883133&response_type=code&redirect_uri=https%3A%2F%2Fpandaptable.moe%2Fcontact%2Fcallback&scope=gdm.join+identify")
+    return app.redirect(f"{app.env['REDIRECT_URL']}")
 
 
 @app.get("/contact/callback")
+async def discord_contact_callback_parse(req: Request):
+    if request.values.get('error'):
+        return request.values['error']
+    discord = make_session(state=session.get('oauth2_state'))
+    token = discord.fetch_token(
+        "https://discord.com/api/oauth2/token",
+        client_secret=(app.env[OAUTH2_CLIENT_SECRET]),
+        authorization_response=request.url)
+    session['oauth2_token'] = token
+
+async def discord_contact_callback_data():
+    discord = make_session(token=session.get('oauth2_token'))
+    user = discord.get('https://discord.com/api/users/@me').json()
+    connections = discord.get('https://discord.com/api/users/@me/connections').json()
+    return jsonify(user=user, connections=connections)
+
 async def discord_contact_callback(req: Request):
     discord.Embed.set_thumbnail(
         url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['avatar']}.png?size=4096"
