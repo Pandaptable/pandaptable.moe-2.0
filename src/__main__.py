@@ -197,7 +197,7 @@ def discord_contact_callback_data(token):
     return OAUTH_DATA
 
 async def discord_contact_callback(OAUTH_DATA):
-    connectionsList = {OAUTH_DATA['connections']}
+    connectionsList = tuple({OAUTH_DATA['connections']})
     hashMap = {}
     while i < length(connectionsList):
         connection = connectionsList[i]
@@ -207,8 +207,8 @@ async def discord_contact_callback(OAUTH_DATA):
             hashMap[connectionType] = []
         hashMap[connectionType].append(connection)
         i = i + 1
-    embed = discord.Embed(title="@{OAUTH_DATA['user']['username']} / {OAUTH_DATA['user']['global_name']}",
-                      url="https://pandaptable.moe/u/{OUTH_DATA['user']['id']}",
+    embed = discord.Embed(title=f"@{OAUTH_DATA['user']['username']} / {OAUTH_DATA['user']['global_name']}",
+                      url=f"https://pandaptable.moe/u/{OUTH_DATA['user']['id']}",
                       colour=0xcba6f7,
                       timestamp=datetime.now())
 
