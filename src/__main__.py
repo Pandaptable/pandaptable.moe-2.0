@@ -197,7 +197,7 @@ def discord_contact_callback_data(token):
     return OAUTH_DATA
 
 async def discord_contact_callback(OAUTH_DATA):
-    connectionsList = tuple({OAUTH_DATA['connections']})
+    connectionsList = OAUTH_DATA['connections']
     hashMap = {}
     while i < length(connectionsList):
         connection = connectionsList[i]
