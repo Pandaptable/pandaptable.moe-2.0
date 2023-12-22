@@ -173,13 +173,13 @@ async def embed_guild(req: Request):
 
 @app.get("/contact")
 async def discord_contact(req: Request):
-    oauth = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URL"], state=session['state'], scope=app.env[OAUTH2_SCOPES])
+    oauth = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URL"], state=state, scope=app.env[OAUTH2_SCOPES])
     login_url, state = oauth.authorization_url(app.env[OAUTH2_REDIRECT_URL])
-    return state, app.redirect(app.env["OAUTH2_REDIRECT_URL"])
+    return app.redirect(app.env["OAUTH2_REDIRECT_URL"]), state
 
 
 @app.get("/contact/callback")
-async def discord_contact_callback_parse(req: Request):
+async def discord_contact_callback_parse(req: Request, state):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URL"], state=state, scope=app.env[OAUTH2_SCOPES])
     token = discord.fetch_token(
         "https://discord.com/api/oauth2/token",
@@ -187,14 +187,14 @@ async def discord_contact_callback_parse(req: Request):
         authorization_response=req.url)
     return token
 
-async def discord_contact_callback_data():
+async def discord_contact_callback_data(token):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], token=token)
     user = discord.get('https://discord.com/api/users/@me').json()
     connections = discord.get('https://discord.com/api/users/@me/connections').json()
     OAUTH_DATA = json.dumps(user, connections)
     return OAUTH_DATA
 
-async def discord_contact_callback(req: Request):
+async def discord_contact_callback(req: Request, OAUTH_DATA):
     discord.Embed.set_thumbnail(
         url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['avatar']}.png?size=4096"
     )
