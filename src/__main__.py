@@ -172,7 +172,7 @@ async def embed_guild(req: Request):
 
 @app.get("/contact")
 async def discord_contact(req: Request):
-    return app.redirect(f"{app.env['REDIRECT_URL']}")
+    return app.redirect(f"{app.env['OAUTH2_REDIRECT_URL']}")
 
 
 @app.get("/contact/callback")
