@@ -170,19 +170,19 @@ async def embed_guild(req: Request):
     return app.jinja_template.render_template(template_name="guild.html", **context)
 
 @app.get("/contact")
-async def redirect_contact(req: Request):
+async def discord_contact(req: Request):
     return app.redirect(f"https://discord.com/api/oauth2/authorize?client_id=1145115157194883133&response_type=code&redirect_uri=https%3A%2F%2Fpandaptable.moe%2Fcontact%2Fcallback&scope=gdm.join+identify")
 
 
 @app.get("/contact/callback")
 async def discord_contact_callback(req: Request):
-    embed.set_thumbnail(
+    discord.embed.set_thumbnail(
         url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['avatar']}.png?size=4096"
     )
     await app.http_client.post(
         "https://discord.com/api/v10/channels/1145120233447768265/messages",
         json={
-            "embeds": [embed.to_dict()],
+            "embeds": [discord.embed.to_dict()],
             "components": [
                 {
                     "type": 1,
