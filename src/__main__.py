@@ -189,9 +189,7 @@ def discord_contact_callback_parse(req: Request):
         code=code
         )
     data = discord_contact_callback_data(token)
-    discord_contact_callback(data)
-    return "test"
-
+    return discord_contact_callback(data)
 
 def discord_contact_callback_data(token):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], token=token)
