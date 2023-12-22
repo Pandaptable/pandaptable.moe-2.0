@@ -199,6 +199,7 @@ def discord_contact_callback_data(token):
 async def discord_contact_callback(OAUTH_DATA):
     connectionsList = OAUTH_DATA['connections']
     hashMap = {}
+    i = 0
     while i < length(connectionsList):
         connection = connectionsList[i]
         connectionType = connection['type']
