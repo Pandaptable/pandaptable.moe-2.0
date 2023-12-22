@@ -177,13 +177,11 @@ async def discord_contact(req: Request):
 
 @app.get("/contact/callback")
 async def discord_contact_callback_parse(req: Request):
-    if request.values.get('error'):
-        return request.values['error']
     discord = make_session(state=session.get('oauth2_state'))
     token = discord.fetch_token(
         "https://discord.com/api/oauth2/token",
         client_secret=(app.env["OAUTH2_CLIENT_SECRET"]),
-        authorization_response=request.url)
+        authorization_response=req.url)
     session['oauth2_token'] = token
 
 async def discord_contact_callback_data():
