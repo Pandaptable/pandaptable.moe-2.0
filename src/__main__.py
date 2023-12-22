@@ -175,7 +175,7 @@ async def embed_guild(req: Request):
 async def discord_contact(req: Request):
     oauth = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URL"], state=session['state'], scope=app.env[OAUTH2_SCOPES])
     login_url, state = oauth.authorization_url(app.env[OAUTH2_REDIRECT_URL])
-    return app.redirect(app.env["OAUTH2_REDIRECT_URL"]), state
+    return state, app.redirect(app.env["OAUTH2_REDIRECT_URL"])
 
 
 @app.get("/contact/callback")
