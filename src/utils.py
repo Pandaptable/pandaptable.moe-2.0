@@ -32,6 +32,7 @@ class Website(Robyn):
             "OWNER_ID": int(os.getenv("OWNER_ID")),
             "OAUTH2_SCOPES": os.getenv("OAUTH2_SCOPES"),
             "OAUTH2_CLIENT_ID": os.getenv("OAUTH2_CLIENT_ID"),
+            "OAUTH2_REDIRECT_URI": os.getenv("OAUTH2_REDIRECT_URI"),
             "OAUTH2_CLIENT_SECRET": os.getenv("OAUTH2_CLIENT_SECRET"),
             "OAUTH2_URL": os.getenv("OAUTH2_URL"),
             "PORT": os.getenv("PORT", 8080),

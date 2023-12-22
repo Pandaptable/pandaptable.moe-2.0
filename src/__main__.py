@@ -179,7 +179,7 @@ def discord_contact(req: Request):
 
 @app.get("/contact/callback")
 def discord_contact_callback_parse(req: Request):
-    discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_URL"], scope=app.env["OAUTH2_SCOPES"])
+    discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URI"], scope=app.env["OAUTH2_SCOPES"])
     query_data = req.queries
     code = query_data['code']
     token = discord.fetch_token(
