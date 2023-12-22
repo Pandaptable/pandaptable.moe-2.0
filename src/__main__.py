@@ -185,7 +185,7 @@ def discord_contact_callback_parse(req: Request):
     token = discord.fetch_token(
         "https://discord.com/api/oauth2/token",
         client_secret=(app.env["OAUTH2_CLIENT_SECRET"]),
-        code=code,
+        authorization_response=req.url,
         )
     data = discord_contact_callback_data(token)
     discord_contact_callback(data)
