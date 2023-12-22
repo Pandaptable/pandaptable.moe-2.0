@@ -172,14 +172,14 @@ async def embed_guild(req: Request):
     return app.jinja_template.render_template(template_name="guild.html", **context)
 
 @app.get("/contact")
-async def discord_contact(req: Request):
+def discord_contact(req: Request):
     oauth = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URL"], state=state, scope=app.env[OAUTH2_SCOPES])
     login_url, state = oauth.authorization_url(app.env[OAUTH2_REDIRECT_URL])
     return app.redirect(app.env["OAUTH2_REDIRECT_URL"]), state
 
 
 @app.get("/contact/callback")
-async def discord_contact_callback_parse(req: Request, state):
+def discord_contact_callback_parse(req: Request, state: state):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URL"], state=state, scope=app.env[OAUTH2_SCOPES])
     token = discord.fetch_token(
         "https://discord.com/api/oauth2/token",
@@ -187,7 +187,7 @@ async def discord_contact_callback_parse(req: Request, state):
         authorization_response=req.url)
     return token
 
-async def discord_contact_callback_data(token):
+def discord_contact_callback_data(token: token):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], token=token)
     user = discord.get('https://discord.com/api/users/@me').json()
     connections = discord.get('https://discord.com/api/users/@me/connections').json()
