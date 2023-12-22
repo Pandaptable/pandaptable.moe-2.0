@@ -182,10 +182,12 @@ def discord_contact_callback_parse(req: Request):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URI"], scope=['identify', 'gdm.join', 'connections'])
     query_data = req.queries
     code = query_data['code']
+    print(code)
     token = discord.fetch_token(
         "https://discord.com/api/oauth2/token",
         client_secret=(app.env["OAUTH2_CLIENT_SECRET"]),
         authorization_response=f"{req.url.scheme}://{req.url.host}{req.url.path}",
+        code=code
         )
     data = discord_contact_callback_data(token)
     discord_contact_callback(data)
