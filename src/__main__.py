@@ -1,4 +1,5 @@
 import logging
+import json
 
 import discord
 from requests_oauthlib import OAuth2Session
@@ -172,23 +173,26 @@ async def embed_guild(req: Request):
 
 @app.get("/contact")
 async def discord_contact(req: Request):
-    return app.redirect(app.env["OAUTH2_REDIRECT_URL"])
+    oauth = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=redirect_uri, state=session['state'], scope=app.env[OAUTH2_SCOPES])
+    login_url, state = oauth.authorization_url(app.env[OAUTH2_REDIRECT_URL])
+    return app.redirect(app.env["OAUTH2_REDIRECT_URL"]), state
 
 
 @app.get("/contact/callback")
 async def discord_contact_callback_parse(req: Request):
-    discord = make_session(state=session.get('oauth2_state'))
+    discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=redirect_uri, state=state, scope=app.env[OAUTH2_SCOPES])
     token = discord.fetch_token(
         "https://discord.com/api/oauth2/token",
         client_secret=(app.env["OAUTH2_CLIENT_SECRET"]),
         authorization_response=req.url)
-    session['oauth2_token'] = token
+    return token
 
 async def discord_contact_callback_data():
-    discord = make_session(token=session.get('oauth2_token'))
+    discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], token=token)
     user = discord.get('https://discord.com/api/users/@me').json()
     connections = discord.get('https://discord.com/api/users/@me/connections').json()
-    return jsonify(user=user, connections=connections)
+    OAUTH_DATA = json.dumps(user, connections)
+    return OAUTH_DATA
 
 async def discord_contact_callback(req: Request):
     discord.Embed.set_thumbnail(
