@@ -182,7 +182,6 @@ def discord_contact_callback_parse(req: Request):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], redirect_uri=app.env["OAUTH2_REDIRECT_URI"], scope=['identify', 'gdm.join', 'connections'])
     query_data = req.queries
     code = query_data['code']
-    print(code)
     token = discord.fetch_token(
         "https://discord.com/api/oauth2/token",
         client_secret=(app.env["OAUTH2_CLIENT_SECRET"]),
@@ -201,7 +200,7 @@ def discord_contact_callback_data(token):
     OAUTH_DATA = json.dumps({"user": user, "connections": connections})
     return OAUTH_DATA
 
-async def discord_contact_callback(req: Request, OAUTH_DATA):
+async def discord_contact_callback(OAUTH_DATA):
     discord.Embed.set_thumbnail(
         url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['avatar']}.png?size=4096"
     )
