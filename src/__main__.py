@@ -199,13 +199,14 @@ def discord_contact_callback_data(token):
     return OAUTH_DATA
 
 async def discord_contact_callback(OAUTH_DATA):
-    discord.Embed.set_thumbnail(
+    embed = discord.Embed()
+    embed.set_thumbnail(
         url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['avatar']}.png?size=4096"
     )
     await app.http_client.post(
         "https://discord.com/api/v10/channels/1145120233447768265/messages",
         json={
-            "embeds": [discord.Embed.to_dict()],
+            "embeds": [embed.to_dict()],
             "components": [
                 {
                     "type": 1,
