@@ -218,9 +218,9 @@ async def discord_contact_callback(OAUTH_DATA):
                             "custom_id": f"accept-{OAUTH_DATA['user']['id']}",
                         },
                         {
-                            "type": 3,
+                            "type": 2,
                             "label": "Deny",
-                            "style": 3,
+                            "style": 2,
                             "custom_id": f"deny-{OAUTH_DATA['user']['id']}",
                         },
                     ],
