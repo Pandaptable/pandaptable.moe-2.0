@@ -213,7 +213,7 @@ async def discord_contact_callback(OAUTH_DATA):
                       url=f"https://pandaptable.moe/u/{OAUTH_DATA['user']['id']}",
                       colour=0xcba6f7)
 
-    embed.set_author(name="Contact Request", icon_url="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNjYmE2ZjciIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJtNCA2bDYuMTA4IDQuNjEybC4wMDIuMDAyYy42NzguNDk3IDEuMDE3Ljc0NiAxLjM4OS44NDJhMiAyIDAgMCAwIDEuMDAyIDBjLjM3Mi0uMDk2LjcxMi0uMzQ1IDEuMzkyLS44NDRjMCAwIDMuOTE3LTMuMDA2IDYuMTA3LTQuNjEyTTMgMTUuOFY4LjJjMC0xLjEyIDAtMS42OC4yMTgtMi4xMDhjLjE5Mi0uMzc3LjQ5Ny0uNjgyLjg3NC0uODc0QzQuNTIgNSA1LjA4IDUgNi4yIDVoMTEuNmMxLjEyIDAgMS42OCAwIDIuMTA3LjIxOGMuMzc3LjE5Mi42ODMuNDk3Ljg3NS44NzRjLjIxOC40MjcuMjE4Ljk4Ny4yMTggMi4xMDV2Ny42MDdjMCAxLjExOCAwIDEuNjc2LS4yMTggMi4xMDRhMi4wMDIgMi4wMDIgMCAwIDEtLjg3NS44NzRjLS40MjcuMjE4LS45ODYuMjE4LTIuMTA0LjIxOEg2LjE5N2MtMS4xMTggMC0xLjY3OCAwLTIuMTA1LS4yMThhMiAyIDAgMCAxLS44NzQtLjg3NEMzIDE3LjQ4IDMgMTYuOTIgMyAxNS44Ii8+PC9zdmc+")
+    embed.set_author(name="Contact Request", icon_url="https://files.catbox.moe/axcja3.png")
     
     embed.add_field(name="<:domain:1187827140381638827>Domains", value=f"{hashMap['domain'][0]['name']}", inline=True)
     embed.add_field(name="<:steam:1187827145314160752>Steam", value=f"{hashMap['steam'][0]['name']}", inline=True)
