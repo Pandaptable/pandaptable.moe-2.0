@@ -237,7 +237,7 @@ async def discord_contact_callback(OAUTH_DATA):
         val = 'None'
         conData = fieldData[conType]
         if conType in hashMap:
-            val = ' | '.join([getValue(i, conData['fmt'], con) for i,con in enumerate(hashMap[conType])])
+            val = ' | '.join([getValue(i+1, conData['fmt'], con) for i,con in enumerate(hashMap[conType])])
         embed.add_field(name=f"<:{conType}:{conData['num']}>{conData['prettyName']}", value=val, inline=True)
 
     embed.set_image(url=f"https://cdn.discordapp.com/banners/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['banner']}.png?size=4096")
