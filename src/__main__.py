@@ -1,6 +1,7 @@
 import logging
 import json
 import requests
+import re
 
 import discord
 from requests_oauthlib import OAuth2Session
@@ -197,16 +198,22 @@ def discord_contact_callback_data(token):
     OAUTH_DATA = {"user": user, "connections": connections}
     return OAUTH_DATA
 
+def num_to_roman(n: int) -> str:
+    return chr(0x215F + n)
+
+def getValue(n: int, fmt: str, collection: dict):
+    s = fmt.replace("<n>", num_to_roman(n))
+    replaced = [collection[m] for m in re.findall(r"<(.*?)>", s)]
+    other = re.split(r"<.*?>", s)
+    return ''.join([x for xs in zip(other, replaced) for x in xs]) + other[-1]
+
 async def discord_contact_callback(OAUTH_DATA):
     connectionsList = OAUTH_DATA['connections']
     hashMap = {}
     for connection in connectionsList:
         connectionType = connection['type']
-
-        # if connectionType not in hashMap.keys():
-        #     hashMap[connectionType] = []
-        # hashMap[connectionType].append(connection)
-        hashMap.setdefault(connectionType, connection)
+        hashMap.setdefault(connectionType, [])
+        hashMap[connectionType].append(connection)
     print(hashMap)
 
     embed = discord.Embed(title=f"@{OAUTH_DATA['user']['username']} / {OAUTH_DATA['user']['global_name']}",
@@ -219,16 +226,19 @@ async def discord_contact_callback(OAUTH_DATA):
     # embed.add_field(name=":domain:Domains", value=f"{hashMap['domain'][0]['name']}", inline=True)
     # ...
     fieldData = {
-        'domain':    dict(num=1187827140381638827, prettyName='Domains'),
-        'steam':     dict(num=1187827145314160752, prettyName='Steam'),
-        'github':    dict(num=1187827143716118699, prettyName='Github'),
-        'epicgames': dict(num=1187827142654963813, prettyName='Epic'),
-        'youtube':   dict(num=1187827150208893048, prettyName='Youtube'),
-        'twitter':   dict(num=1187827148363419688, prettyName='Twitter'),
+        'domain':    dict(num=1187827140381638827, prettyName='Domains', fmt='[<n>](https://<id>)'),
+        'steam':     dict(num=1187827145314160752, prettyName='Steam', fmt='[<n>](https://steamcommunity.com/profiles/<id>)'),
+        'github':    dict(num=1187827143716118699, prettyName='Github', fmt='[<n>](https://github.com/<name>)'),
+        'epicgames': dict(num=1187827142654963813, prettyName='Epic', fmt='<name>'),
+        'youtube':   dict(num=1187827150208893048, prettyName='Youtube', fmt='[<n>](https://youtube.com/channel/<id>)'),
+        'twitter':   dict(num=1187827148363419688, prettyName='Twitter', fmt='[<n>](https://twitter.com/<id>)'),
     }
-    for name in fieldData:
-        if name not in hashMap: continue # Skips connection if it doesn't exist
-        embed.add_field(name=f"<:{name}:{fieldData[name]['num']}>{fieldData[name]['prettyName']}", value=f"{hashMap[name]['name']}", inline=True)
+    for conType in fieldData:
+        val = 'None'
+        conData = fieldData[conType]
+        if conType in hashMap:
+            val = ' | '.join([getValue(i, conData['fmt'], con) for i,con in enumerate(hashMap[conType])])
+        embed.add_field(name=f"<:{conType}:{conData['num']}>{conData['prettyName']}", value=val, inline=True)
 
     embed.set_image(url=f"https://cdn.discordapp.com/banners/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['banner']}.png?size=4096")
     embed.set_thumbnail(url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['avatar']}.png?size=4096")
