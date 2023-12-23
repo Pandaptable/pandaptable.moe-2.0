@@ -252,7 +252,7 @@ async def discord_contact_callback(OAUTH_DATA):
         },
         headers={"Content-Type": "application/json", "Authorization": f"Bot {app.env['TOKEN']}"},
     )
-    print(embed)
+    print([embed.to_dict()])
     return app.redirect("/contact/success")
 
 @app.get("/contact/success")
