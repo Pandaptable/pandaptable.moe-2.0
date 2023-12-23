@@ -209,7 +209,6 @@ async def discord_contact_callback(OAUTH_DATA):
             hashMap[connectionType] = []
         hashMap[connectionType].append(connection)
         i = i + 1
-    print(json.dumps(hashMap))
     embed = discord.Embed(title=f"@{OAUTH_DATA['user']['username']} / {OAUTH_DATA['user']['global_name']}",
                       url=f"https://pandaptable.moe/u/{OAUTH_DATA['user']['id']}",
                       colour=0xcba6f7)
@@ -253,6 +252,7 @@ async def discord_contact_callback(OAUTH_DATA):
         },
         headers={"Content-Type": "application/json", "Authorization": f"Bot {app.env['TOKEN']}"},
     )
+    print(embed)
     return app.redirect("/contact/success")
 
 @app.get("/contact/success")
