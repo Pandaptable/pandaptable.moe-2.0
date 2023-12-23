@@ -209,6 +209,7 @@ async def discord_contact_callback(OAUTH_DATA):
             hashMap[connectionType] = []
         hashMap[connectionType].append(connection)
         i = i + 1
+    print(hashMap)
     embed = discord.Embed(title=f"@{OAUTH_DATA['user']['username']} / {OAUTH_DATA['user']['global_name']}",
                       url=f"https://pandaptable.moe/u/{OAUTH_DATA['user']['id']}",
                       colour=0xcba6f7,
