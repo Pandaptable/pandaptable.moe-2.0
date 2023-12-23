@@ -222,7 +222,7 @@ async def discord_contact_callback(OAUTH_DATA):
     embed.add_field(name="<:youtube:1187827150208893048>Youtube", value=f"{hashMap['youtube'][0]['name']}", inline=True)
     embed.add_field(name="<:twitter:1187827148363419688>Twitter", value=f"{hashMap['twitter'][0]['name']}", inline=True)
     
-    embed.set_image(url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['banner']}.png?size=4096")
+    embed.set_image(url=f"https://cdn.discordapp.com/banners/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['banner']}.png?size=4096")
     embed.set_thumbnail(url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['avatar']}.png?size=4096")
     
     embed.set_footer(text="pandaptable.moe", icon_url="https://dp.nea.moe/avatar/97153209843335168.png")
