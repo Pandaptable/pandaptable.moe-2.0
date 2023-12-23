@@ -200,31 +200,39 @@ def discord_contact_callback_data(token):
 async def discord_contact_callback(OAUTH_DATA):
     connectionsList = OAUTH_DATA['connections']
     hashMap = {}
-    i = 0
-    while i < len(connectionsList):
-        connection = connectionsList[i]
+    for connection in connectionsList:
         connectionType = connection['type']
-        
-        if connectionType not in hashMap.keys():
-            hashMap[connectionType] = []
-        hashMap[connectionType].append(connection)
-        i = i + 1
+
+        # if connectionType not in hashMap.keys():
+        #     hashMap[connectionType] = []
+        # hashMap[connectionType].append(connection)
+        hashMap.setdefault(connectionType, connection)
+    print(hashMap)
+
     embed = discord.Embed(title=f"@{OAUTH_DATA['user']['username']} / {OAUTH_DATA['user']['global_name']}",
                       url=f"https://pandaptable.moe/u/{OAUTH_DATA['user']['id']}",
-                      colour=0xcba6f7)
+                      colour=0xcba6f7,
+                      timestamp=datetime.now())
 
     embed.set_author(name="Contact Request", icon_url="https://files.catbox.moe/axcja3.png")
-    
-    embed.add_field(name="<:domain:1187827140381638827>Domains", value=f"{hashMap['domain'][0]['name']}", inline=True)
-    embed.add_field(name="<:steam:1187827145314160752>Steam", value=f"{hashMap['steam'][0]['name']}", inline=True)
-    embed.add_field(name="<:github:1187827143716118699>Github", value=f"{hashMap['github'][0]['name']}", inline=True)
-    embed.add_field(name="<:epicgames:1187827142654963813>Epic", value=f"{hashMap['epicgames'][0]['name']}", inline=True)
-    embed.add_field(name="<:youtube:1187827150208893048>Youtube", value=f"{hashMap['youtube'][0]['name']}", inline=True)
-    embed.add_field(name="<:twitter:1187827148363419688>Twitter", value=f"{hashMap['twitter'][0]['name']}", inline=True)
-    
+
+    # embed.add_field(name=":domain:Domains", value=f"{hashMap['domain'][0]['name']}", inline=True)
+    # ...
+    fieldData = {
+        'domain':    dict(num=1187827140381638827, prettyName='Domains'),
+        'steam':     dict(num=1187827145314160752, prettyName='Steam'),
+        'github':    dict(num=1187827143716118699, prettyName='Github'),
+        'epicgames': dict(num=1187827142654963813, prettyName='Epic'),
+        'youtube':   dict(num=1187827150208893048, prettyName='Youtube'),
+        'twitter':   dict(num=1187827148363419688, prettyName='Twitter'),
+    }
+    for name in fieldData:
+        if name not in hashMap: continue # Skips connection if it doesn't exist
+        embed.add_field(name=f"<:{name}:{fieldData[name]['num']}>{fieldData[name]['prettyName']}", value=f"{hashMap[name]['name']}", inline=True)
+
     embed.set_image(url=f"https://cdn.discordapp.com/banners/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['banner']}.png?size=4096")
     embed.set_thumbnail(url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['avatar']}.png?size=4096")
-    
+
     embed.set_footer(text="pandaptable.moe", icon_url="https://dp.nea.moe/avatar/97153209843335168.png")
     await app.http_client.post(
         "https://discord.com/api/v10/channels/1145120233447768265/messages",
@@ -246,6 +254,12 @@ async def discord_contact_callback(OAUTH_DATA):
                             "style": 2,
                             "custom_id": f"deny-{OAUTH_DATA['user']['id']}",
                         },
+                        {
+                            "type": 2,
+                            "label": "Ban",
+                            "style": 4,
+                            "custom_id": f"ban-{OAUTH_DATA['user']['id']}"
+                        }
                     ],
                 }
             ],
