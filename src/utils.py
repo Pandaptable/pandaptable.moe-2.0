@@ -30,6 +30,8 @@ class Website(Robyn):
             "CHANNEL_ID": os.getenv("CHANNEL_ID"),
             "MESSAGE_ID": os.getenv("MESSAGE_ID"),
             "OWNER_ID": int(os.getenv("OWNER_ID")),
+            "DATABASE_URL": os.getenv("DATABASE_URL"),
+            "DATABASE_KEY": os.getenv("DATABASE_KEY"),
             "OAUTH2_CLIENT_ID": os.getenv("OAUTH2_CLIENT_ID"),
             "OAUTH2_REDIRECT_URI": os.getenv("OAUTH2_REDIRECT_URI"),
             "OAUTH2_CLIENT_SECRET": os.getenv("OAUTH2_CLIENT_SECRET"),
