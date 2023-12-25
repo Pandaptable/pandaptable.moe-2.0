@@ -243,7 +243,7 @@ async def discord_contact_callback(OAUTH_DATA):
     embed.set_image(url=f"https://cdn.discordapp.com/banners/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['banner']}.png?size=4096")
     embed.set_thumbnail(url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['avatar']}.png?size=4096")
 
-    embed.set_footer(text="<:mail:1188914560405618708> pandaptable.moe")
+    embed.set_footer(text="pandaptable.moe", icon_url="https://dp.nea.moe/avatar/97153209843335168.png")
     await app.http_client.post(
         "https://discord.com/api/channels/1145120233447768265/messages",
         json={
