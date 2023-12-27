@@ -217,8 +217,7 @@ def discord_contact_callback_data(token):
                     "banned": "false"
                     }
 
-    table = supabase.table('OAUTH_DATA').select(f"{OAUTH_DATA['id']}").json()
-    print(table)
+    table = supabase.table('OAUTH_DATA').select(f"{OAUTH_DATA['id']}")
     if OAUTH_DATA['id'] == table['id']:
         supabase.table('OAUTH_DATA').update(OAUTH_DATA).eq('id', f"{OAUTH_DATA['id']}").execute()
     else:
