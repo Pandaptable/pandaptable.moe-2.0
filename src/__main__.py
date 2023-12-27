@@ -5,7 +5,7 @@ import re
 
 import discord
 from requests_oauthlib import OAuth2Session
-from robyn import Request, Response, logger
+from robyn import Request, Response, jsonify
 from datetime import datetime
 from supabase import create_client, Client
 from discord_interactions import InteractionType, InteractionResponseType
@@ -315,10 +315,6 @@ async def discord_contact_interactions(req: Request):
     if not verify_key(req.data, signature, timestamp, app.env["PUBLIC_KEY"]):
         return Response(status_code=401)
     if req.json['type'] == 1:
-        return Response(
-            status_code=200,
-            headers={"Content-Type": "application/json"},
-            body={"type": 1}
-        )
+        return jsonify({"type": 1})
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
