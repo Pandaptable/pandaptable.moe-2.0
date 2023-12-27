@@ -7,10 +7,13 @@ import discord
 from requests_oauthlib import OAuth2Session
 from robyn import Request, Response
 from datetime import datetime
+from supabase import create_client, Client
+
 
 from utils import Website
 
 app = Website(__file__)
+supabase: Client = create_client(DATABASE_URL, DATABASE_KEY)
 
 app.add_directory(
     route="/",
@@ -196,6 +199,7 @@ def discord_contact_callback_data(token):
     user = discord.get('https://discord.com/api/users/@me').json()
     connections = discord.get('https://discord.com/api/users/@me/connections').json()
     OAUTH_DATA = {"user": user, "connections": connections}
+    data, count = supabase.table('OAUTH_DATA').insert({"user": user, "connections": connections}).execute()
     return OAUTH_DATA
 
 def num_to_roman(n: int) -> str:
@@ -214,7 +218,6 @@ async def discord_contact_callback(OAUTH_DATA):
         connectionType = connection['type']
         hashMap.setdefault(connectionType, [])
         hashMap[connectionType].append(connection)
-    print(hashMap)
 
     embed = discord.Embed(title=f"@{OAUTH_DATA['user']['username']} / {OAUTH_DATA['user']['global_name']}",
                       url=f"https://pandaptable.moe/u/{OAUTH_DATA['user']['id']}",
@@ -276,7 +279,6 @@ async def discord_contact_callback(OAUTH_DATA):
         },
         headers={"Content-Type": "application/json", "Authorization": f"Bot {app.env['TOKEN']}"},
     )
-    print([embed.to_dict()])
     return app.redirect("/contact/success")
 
 @app.get("/contact/success")
