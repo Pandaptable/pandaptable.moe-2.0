@@ -5,7 +5,7 @@ import re
 
 import discord
 from requests_oauthlib import OAuth2Session
-from robyn import Request, Response, logger
+from robyn import Request, Response
 from datetime import datetime
 from supabase import create_client, Client
 from discord_interactions import InteractionType, InteractionResponseType
@@ -22,6 +22,10 @@ app.add_directory(
     index_file="index.html",
 )
 
+
+@app.before_request()
+async def log_request(req: Request):
+    logging.info(f"Received request: %s", req)
 
 @app.startup_handler
 async def startup() -> None:
