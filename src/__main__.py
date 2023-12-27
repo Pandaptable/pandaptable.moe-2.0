@@ -13,7 +13,6 @@ from supabase import create_client, Client
 from utils import Website
 
 app = Website(__file__)
-logger = Logger(app)
 supabase: Client = create_client(app.env["DATABASE_URL"], app.env["DATABASE_KEY"])
 
 app.add_directory(
@@ -21,11 +20,6 @@ app.add_directory(
     directory_path="pandaptable.moe",
     index_file="index.html",
 )
-
-
-@app.before_request()
-async def log_request(request: Request):
-    logger.info(f"Received request: %s", request)
 
 
 @app.startup_handler
