@@ -213,10 +213,10 @@ def discord_contact_callback_data(token):
                     "mfa_enabled": user["mfa_enabled"],
                     "locale": user["locale"],
                     "connections": connections,
-                    "banned": "false"
+                    "banned": "false",
+                    "token": token
                     }
     supabase_data = supabase.table('OAUTH_DATA').upsert(OAUTH_DATA).execute()
-    print(OAUTH_DATA["id"], type(OAUTH_DATA["id"]))
     return OAUTH_DATA
 
 def num_to_roman(n: int) -> str:
@@ -231,7 +231,6 @@ def getValue(n: int, fmt: str, collection: dict):
 async def discord_contact_callback(OAUTH_DATA):
     connectionsList, _ = supabase.table('OAUTH_DATA').select('*').eq('id', OAUTH_DATA['id']).execute()
     _, connectionsList = connectionsList
-    print(connectionsList)
     hashMap = {}
     for connection in connectionsList[0]['connections']:
         connectionType = connection['type']
@@ -262,8 +261,8 @@ async def discord_contact_callback(OAUTH_DATA):
             val = ' | '.join([getValue(i+1, conData['fmt'], con) for i,con in enumerate(hashMap[conType])])
         embed.add_field(name=f"<:{conType}:{conData['num']}> {conData['prettyName']}", value=val, inline=True)
 
-    embed.set_image(url=f"https://cdn.discordapp.com/banners/{OAUTH_DATA['id']}/{OAUTH_DATA['id']}.png?size=4096")
-    embed.set_thumbnail(url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['id']}/{OAUTH_DATA['id']}.png?size=4096")
+    embed.set_image(url=f"https://cdn.discordapp.com/banners/{OAUTH_DATA['id']}/{OAUTH_DATA['banner']}.png?size=4096")
+    embed.set_thumbnail(url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['id']}/{OAUTH_DATA['avatar']}.png?size=4096")
 
     embed.set_footer(text="pandaptable.moe", icon_url="https://dp.nea.moe/avatar/97153209843335168.png")
     await app.http_client.post(
@@ -307,5 +306,9 @@ async def discord_contact_success(req: Request):
         "message": "A contact request has been sent. A group DM will be created if I want to talk.",
     }
     return app.jinja_template.render_template(template_name="error.html", **context)
+
+@app.get("/contact/interactions")
+async def discord_contact_interactions(req: Request):
+    return { type: 1 }
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
