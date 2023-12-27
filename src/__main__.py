@@ -13,7 +13,7 @@ from supabase import create_client, Client
 from utils import Website
 
 app = Website(__file__)
-supabase: Client = create_client({DATABASE_URL}, {DATABASE_KEY})
+supabase: Client = create_client(app.env["DATABASE_URL"], app.env["DATABASE_KEY"])
 
 app.add_directory(
     route="/",
