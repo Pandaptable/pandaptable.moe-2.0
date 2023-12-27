@@ -216,6 +216,7 @@ def discord_contact_callback_data(token):
                     "banned": "false"
                     }
     supabase_data = supabase.table('OAUTH_DATA').upsert(OAUTH_DATA).execute()
+    print(OAUTH_DATA["id"], type(OAUTH_DATA["id"]))
     return OAUTH_DATA
 
 def num_to_roman(n: int) -> str:
@@ -228,7 +229,8 @@ def getValue(n: int, fmt: str, collection: dict):
     return ''.join([x for xs in zip(other, replaced) for x in xs]) + other[-1]
 
 async def discord_contact_callback(OAUTH_DATA):
-    _, connectionsList, _ = supabase.table('OAUTH_DATA').select('id').eq('id', OAUTH_DATA['id']).execute()
+    connectionsList, _ = supabase.table('OAUTH_DATA').select('*').eq('id', OAUTH_DATA['id']).execute()
+    _, connectionsList = connectionsList
     print(connectionsList)
     hashMap = {}
     for connection in connectionsList:
