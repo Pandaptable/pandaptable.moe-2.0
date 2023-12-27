@@ -231,7 +231,7 @@ def getValue(n: int, fmt: str, collection: dict):
 async def discord_contact_callback(OAUTH_DATA):
     connectionsList = supabase.table('OAUTH_DATA').select(f"'id', {OAUTH_DATA['id']}").eq("connections", "*").execute()
     hashMap = {}
-    for connection in connectionsList:
+    for connection in dict(connectionsList):
         connectionType = connection['type']
         hashMap.setdefault(connectionType, [])
         hashMap[connectionType].append(connection)
