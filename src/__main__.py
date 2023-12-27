@@ -315,7 +315,7 @@ async def discord_contact_interactions(req: Request):
     if not verify_key(req.data, signature, timestamp, app.env["PUBLIC_KEY"]):
         return Response(status_code=401)
     else:
-        if req.json['type'] == 1:
+        if req['type'] == 1:
             return {
                 "status_code": 200,
                 "headers": {"Content-Type": "application/json;charset=UTF-8"},
