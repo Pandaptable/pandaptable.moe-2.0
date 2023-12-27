@@ -314,7 +314,8 @@ async def discord_contact_interactions(req: Request):
     timestamp = req.headers.get('x-signature-timestamp')
     if not verify_key(req.data, signature, timestamp, app.env["PUBLIC_KEY"]):
         return Response(status_code=401)
-    if req.json['type'] == 1:
-        return jsonify({"type": 1})
+    else:
+        if req.json['type'] == 1:
+            return jsonify({"type": 1})
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
