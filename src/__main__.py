@@ -5,7 +5,7 @@ import re
 
 import discord
 from requests_oauthlib import OAuth2Session
-from robyn import Request, Response
+from robyn import Request, Response, logger
 from datetime import datetime
 from supabase import create_client, Client
 
@@ -13,6 +13,7 @@ from supabase import create_client, Client
 from utils import Website
 
 app = Website(__file__)
+logger = Logger(app)
 supabase: Client = create_client(app.env["DATABASE_URL"], app.env["DATABASE_KEY"])
 
 app.add_directory(
@@ -20,6 +21,11 @@ app.add_directory(
     directory_path="pandaptable.moe",
     index_file="index.html",
 )
+
+
+@app.before_request()
+async def log_request(request: Request):
+    logger.info(f"Received request: %s", request)
 
 
 @app.startup_handler
@@ -309,6 +315,11 @@ async def discord_contact_success(req: Request):
 
 @app.post("/contact/interactions")
 async def discord_contact_interactions(req: Request):
-    return { type: 1 }
+    if req.json["type"] == 1:
+        return Response(
+            status_code=200,
+            headers={'Content-Type': 'application/json;charset=UTF-8'},
+            body={"type":1}
+        )
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
