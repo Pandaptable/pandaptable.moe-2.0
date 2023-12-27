@@ -232,7 +232,7 @@ async def discord_contact_callback(OAUTH_DATA):
     connectionsList = supabase.table('OAUTH_DATA').select(f"'id', {OAUTH_DATA['id']}").execute()
     print(connectionsList)
     hashMap = {}
-    for connection in connectionsList:
+    for connections in connectionsList:
         connectionType = connections['type']
         hashMap.setdefault(connectionType, [])
         hashMap[connectionType].append(connection)
