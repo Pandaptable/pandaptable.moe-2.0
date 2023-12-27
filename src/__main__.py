@@ -218,6 +218,7 @@ def discord_contact_callback_data(token):
                     }
 
     table = supabase.table('OAUTH_DATA').select(f"{OAUTH_DATA['id']}")
+    print(table)
     if OAUTH_DATA['id'] in table.id:
         supabase.table('OAUTH_DATA').update(OAUTH_DATA).eq('id', f"{OAUTH_DATA['id']}").execute()
     else:
