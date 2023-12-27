@@ -5,7 +5,7 @@ import re
 
 import discord
 from requests_oauthlib import OAuth2Session
-from robyn import Request, Response, logger
+from robyn import Request, Response, Logger
 from datetime import datetime
 from supabase import create_client, Client
 
