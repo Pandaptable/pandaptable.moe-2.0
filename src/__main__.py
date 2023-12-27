@@ -309,7 +309,7 @@ async def discord_contact_success(req: Request):
     return app.jinja_template.render_template(template_name="error.html", **context)
 
 @app.post("/contact/interactions")
-async def discord_contact_interactions(req: Request):
+def discord_contact_interactions(req: Request):
     signature = req.headers.get('x-signature-ed25519')
     timestamp = req.headers.get('x-signature-timestamp')
     if not verify_key(req.data, signature, timestamp, app.env["PUBLIC_KEY"]):
