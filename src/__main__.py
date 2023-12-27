@@ -313,7 +313,7 @@ async def discord_contact_interactions(req: Request):
         status_code=200,
         response_type="json",
         headers={'Content-Type': 'application/json;charset=UTF-8'},
-        body='{"type":1}'
+        body='{\n  "type": 1\n}'
     )
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
