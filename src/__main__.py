@@ -228,11 +228,11 @@ def getValue(n: int, fmt: str, collection: dict):
     return ''.join([x for xs in zip(other, replaced) for x in xs]) + other[-1]
 
 async def discord_contact_callback(OAUTH_DATA):
-    connectionsList = supabase.table('OAUTH_DATA').select(f"'id', {OAUTH_DATA['id']}").execute()
+    connectionsList, _ = supabase.table('OAUTH_DATA').select(f"'id', {OAUTH_DATA['id']}").execute()
     print(connectionsList)
     hashMap = {}
-    for connections in connectionsList:
-        connectionType = connections['type']
+    for connection in connectionsList:
+        connectionType = connection['type']
         hashMap.setdefault(connectionType, [])
         hashMap[connectionType].append(connection)
 
