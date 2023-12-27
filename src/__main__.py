@@ -307,7 +307,7 @@ async def discord_contact_success(req: Request):
     }
     return app.jinja_template.render_template(template_name="error.html", **context)
 
-@app.get("/contact/interactions")
+@app.post("/contact/interactions")
 async def discord_contact_interactions(req: Request):
     return { type: 1 }
 
