@@ -214,7 +214,7 @@ def discord_contact_callback_data(token):
                     "mfa_enabled": user["mfa_enabled"],
                     "locale": user["locale"],
                     "connections": connections,
-                    "banned": false
+                    "banned": "false"
                     }
 
     supabase_data = supabase.table('OAUTH_DATA').insert(OAUTH_DATA).execute()
