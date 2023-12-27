@@ -8,6 +8,7 @@ from requests_oauthlib import OAuth2Session
 from robyn import Request, Response, logger
 from datetime import datetime
 from supabase import create_client, Client
+from discord_interactions import verify_key_decorator, InteractionType, InteractionResponseType
 
 
 from utils import Website
@@ -308,11 +309,13 @@ async def discord_contact_success(req: Request):
     return app.jinja_template.render_template(template_name="error.html", **context)
 
 @app.post("/contact/interactions")
+@verify_key_decorator(app.env["PUBLIC_KEY"])
 async def discord_contact_interactions(req: Request):
-    return Response(
-        status_code=200,
-        headers={'Content-Type': 'application/json;charset=UTF-8'},
-        body='{"type": 1}'
-    )
+    if req.json['type'] == InteractionType.APPLICATION_COMMAND:
+        return Response(
+            status_code=200,
+            headers={'Content-Type': 'application/json;charset=UTF-8'},
+            body='{"type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE}'
+        )
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
