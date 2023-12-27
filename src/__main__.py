@@ -309,13 +309,15 @@ async def discord_contact_success(req: Request):
     return app.jinja_template.render_template(template_name="error.html", **context)
 
 @app.post("/contact/interactions")
-@verify_key_decorator(app.env["PUBLIC_KEY"])
 async def discord_contact_interactions(req: Request):
-    if req.json['type'] == InteractionType.APPLICATION_COMMAND:
-        return Response(
-            status_code=200,
-            headers={'Content-Type': 'application/json;charset=UTF-8'},
-            body='{"type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE}'
-        )
+    signature = req.headers.get('x-signature-ed25519')
+    timestamp = req.headers.get('x-signature-timestamp')
+    if verify_key(req.data, signature, timestamp, app.env["PUBLIC_KEY"]):
+        if req.json['type'] == InteractionType.APPLICATION_COMMAND:
+            return Response(
+                status_code=200,
+                headers={'Content-Type': 'application/json;charset=UTF-8'},
+                body='{"type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE}'
+            )
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
