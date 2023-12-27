@@ -5,7 +5,7 @@ import re
 
 import discord
 from requests_oauthlib import OAuth2Session
-from robyn import Request, Response, Logger
+from robyn import Request, Response, logger
 from datetime import datetime
 from supabase import create_client, Client
 
@@ -13,7 +13,7 @@ from supabase import create_client, Client
 from utils import Website
 
 app = Website(__file__)
-logger = Logger(app)
+logger = logger(app)
 supabase: Client = create_client(app.env["DATABASE_URL"], app.env["DATABASE_KEY"])
 
 app.add_directory(
