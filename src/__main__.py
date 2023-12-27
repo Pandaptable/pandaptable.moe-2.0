@@ -233,7 +233,7 @@ async def discord_contact_callback(OAUTH_DATA):
     _, connectionsList = connectionsList
     print(connectionsList)
     hashMap = {}
-    for connection in connectionsList:
+    for connection in connectionsList[0]['connections']:
         connectionType = connection['type']
         hashMap.setdefault(connectionType, [])
         hashMap[connectionType].append(connection)
