@@ -5,7 +5,7 @@ import re
 
 import discord
 from requests_oauthlib import OAuth2Session
-from robyn import Request, Response, jsonify
+from robyn import Request, Response, logger
 from datetime import datetime
 from supabase import create_client, Client
 from discord_interactions import InteractionType, InteractionResponseType
@@ -312,11 +312,14 @@ async def discord_contact_success(req: Request):
 async def discord_contact_interactions(req: Request):
     signature = req.headers.get('x-signature-ed25519')
     timestamp = req.headers.get('x-signature-timestamp')
-    print(signature, timestamp, req.body)
-    if not verify_key(req.body, signature, timestamp, app.env["PUBLIC_KEY"]):
+    if not verify_key(req.data, signature, timestamp, app.env["PUBLIC_KEY"]):
         return Response(status_code=401)
     else:
         if req.json['type'] == 1:
-            return jsonify({"type": 1})
+            return {
+                "status_code": 200,
+                "headers": {"Content-Type": "application/json;charset=UTF-8"},
+                "type": 1
+            }
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
