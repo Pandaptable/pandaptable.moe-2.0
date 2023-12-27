@@ -309,11 +309,10 @@ async def discord_contact_success(req: Request):
 
 @app.post("/contact/interactions")
 async def discord_contact_interactions(req: Request):
-    if req.json["type"] == 1:
-        return Response(
-            status_code=200,
-            headers={'Content-Type': 'application/json;charset=UTF-8'},
-            body={"type":1}
-        )
+    return Response(
+        status_code=200,
+        headers={'Content-Type': 'application/json;charset=UTF-8'},
+        body={"type":1}
+    )
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
