@@ -198,7 +198,25 @@ def discord_contact_callback_data(token):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], token=token)
     user = discord.get('https://discord.com/api/users/@me').json()
     connections = discord.get('https://discord.com/api/users/@me/connections').json()
-    OAUTH_DATA = {"user": user, "connections": connections}
+    OAUTH_DATA = {
+                    "id": user.id,
+                    "username": user.username,
+                    "avatar": user.avatar,
+                    "discriminator": user.discriminator,
+                    "public_flags": user.public_flags,
+                    "premium_type": user.premium_type,
+                    "flags": user.flags,
+                    "banner": user.banner,
+                    "accent_color": user.accent_color,
+                    "global_name": user.global_name,
+                    "avatar_decoration_data": user.avatar_decoration_data,
+                    "banner_color": user.banner_color,
+                    "mfa_enabled": user.mfa_enabled,
+                    "locale": user.locale,
+                    "connections": connections,
+                    "banned": false
+                    }
+
     supabase_data = supabase.table('OAUTH_DATA').insert(OAUTH_DATA).execute()
     return OAUTH_DATA
 
@@ -212,15 +230,15 @@ def getValue(n: int, fmt: str, collection: dict):
     return ''.join([x for xs in zip(other, replaced) for x in xs]) + other[-1]
 
 async def discord_contact_callback(OAUTH_DATA):
-    connectionsList = OAUTH_DATA['connections']
+    connectionsList = supabase.table('OAUTH_DATA').select(f"{OAUTH_DATA['id']}").select("connections").execute()
     hashMap = {}
     for connection in connectionsList:
         connectionType = connection['type']
         hashMap.setdefault(connectionType, [])
         hashMap[connectionType].append(connection)
 
-    embed = discord.Embed(title=f"@{OAUTH_DATA['user']['username']} / {OAUTH_DATA['user']['global_name']}",
-                      url=f"https://pandaptable.moe/u/{OAUTH_DATA['user']['id']}",
+    embed = discord.Embed(title=f"@{OAUTH_DATA['username']} / {OAUTH_DATA['global_name']}",
+                      url=f"https://pandaptable.moe/u/{OAUTH_DATA['id']}",
                       colour=0xcba6f7,
                       timestamp=datetime.now())
 
@@ -243,8 +261,8 @@ async def discord_contact_callback(OAUTH_DATA):
             val = ' | '.join([getValue(i+1, conData['fmt'], con) for i,con in enumerate(hashMap[conType])])
         embed.add_field(name=f"<:{conType}:{conData['num']}> {conData['prettyName']}", value=val, inline=True)
 
-    embed.set_image(url=f"https://cdn.discordapp.com/banners/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['banner']}.png?size=4096")
-    embed.set_thumbnail(url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['user']['id']}/{OAUTH_DATA['user']['avatar']}.png?size=4096")
+    embed.set_image(url=f"https://cdn.discordapp.com/banners/{OAUTH_DATA['id']}/{OAUTH_DATA['id']}.png?size=4096")
+    embed.set_thumbnail(url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['id']}/{OAUTH_DATA['id']}.png?size=4096")
 
     embed.set_footer(text="pandaptable.moe", icon_url="https://dp.nea.moe/avatar/97153209843335168.png")
     await app.http_client.post(
@@ -259,19 +277,19 @@ async def discord_contact_callback(OAUTH_DATA):
                             "type": 2,
                             "label": "Accept",
                             "style": 3,
-                            "custom_id": f"accept-{OAUTH_DATA['user']['id']}",
+                            "custom_id": f"accept-{OAUTH_DATA['id']}",
                         },
                         {
                             "type": 2,
                             "label": "Deny",
                             "style": 2,
-                            "custom_id": f"deny-{OAUTH_DATA['user']['id']}",
+                            "custom_id": f"deny-{OAUTH_DATA['id']}",
                         },
                         {
                             "type": 2,
                             "label": "Ban",
                             "style": 4,
-                            "custom_id": f"ban-{OAUTH_DATA['user']['id']}"
+                            "custom_id": f"ban-{OAUTH_DATA['id']}"
                         }
                     ],
                 }
