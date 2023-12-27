@@ -217,7 +217,12 @@ def discord_contact_callback_data(token):
                     "banned": "false"
                     }
 
-    supabase_data = supabase.table('OAUTH_DATA').insert(OAUTH_DATA).execute()
+    table_id = supabase.table('OAUTH_DATA').select(f"{OAUTH_DATA['id']}")
+    if OAUTH_DATA['id'] in table_id:
+        supabase.table('OAUTH_DATA').update(OAUTH_DATA).eq('id', f"{OAUTH_DATA['id']}").execute()
+    else:
+        supabase.table('OAUTH_DATA').insert(OAUTH_DATA).execute()
+
     return OAUTH_DATA
 
 def num_to_roman(n: int) -> str:
