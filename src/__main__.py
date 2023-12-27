@@ -199,7 +199,7 @@ def discord_contact_callback_data(token):
     user = discord.get('https://discord.com/api/users/@me').json()
     connections = discord.get('https://discord.com/api/users/@me/connections').json()
     OAUTH_DATA = {"user": user, "connections": connections}
-    supabase_data = supabase.table('OAUTH_DATA').insert({"user": user, "connections": connections}).execute()
+    supabase_data = supabase.table('OAUTH_DATA').insert(OAUTH_DATA).execute()
     return OAUTH_DATA
 
 def num_to_roman(n: int) -> str:
