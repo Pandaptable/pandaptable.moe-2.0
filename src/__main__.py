@@ -312,6 +312,7 @@ async def discord_contact_success(req: Request):
 async def discord_contact_interactions(req: Request):
     signature = req.headers.get('x-signature-ed25519')
     timestamp = req.headers.get('x-signature-timestamp')
+    print(signature, timestamp, req.body)
     if not verify_key(req.body, signature, timestamp, app.env["PUBLIC_KEY"]):
         return Response(status_code=401)
     else:
