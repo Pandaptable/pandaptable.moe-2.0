@@ -209,7 +209,6 @@ def discord_contact_callback_data(token):
                     "banner": user["banner"],
                     "accent_color": user["accent_color"],
                     "global_name": user["global_name"],
-                    "avatar_decoration_data": user["avatar_decoration_data"],
                     "banner_color": user["banner_color"],
                     "mfa_enabled": user["mfa_enabled"],
                     "locale": user["locale"],
