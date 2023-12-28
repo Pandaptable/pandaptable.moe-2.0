@@ -11,7 +11,7 @@ from robyn import Request, Response, logger
 from loguru import logger
 from datetime import datetime
 from supabase import create_client, Client
-from discord_interactions import InteractionType, InteractionResponseType
+from discord_interactions import verify_key
 
 
 from utils import Website
