@@ -1,4 +1,3 @@
-import logging
 import json
 import requests
 import re
@@ -6,6 +5,7 @@ import re
 import discord
 from requests_oauthlib import OAuth2Session
 from robyn import Request, Response
+from loguru import logger
 from datetime import datetime
 from supabase import create_client, Client
 from discord_interactions import InteractionType, InteractionResponseType
@@ -25,20 +25,26 @@ app.add_directory(
 
 @app.before_request()
 async def log_request(req: Request):
-    logging.info(f"Received request: %s", req)
+    logger.info(f"Received request: {s}", req.method)
+
+
+@app.after_request()
+async def log_response(res: Response):
+    logger.info(f"Sending response: {s}", res.status_code, res.body)
+
 
 @app.startup_handler
 async def startup() -> None:
     await app.login()
     await app.notify_owner()
     await app.reload_links()
-    logging.info("Website & API ready")
+    logger.info("Website & API ready")
 
 
 @app.shutdown_handler
 async def shutdown_handler() -> None:
     await app.client.close()
-    logging.info("Shut down website & API")
+    logger.info("Shut down website & API")
 
 
 @app.get("/version", const=True)
@@ -312,7 +318,7 @@ async def discord_contact_success(req: Request):
     }
     return app.jinja_template.render_template(template_name="error.html", **context)
 
-@app.post("/contact/interactions")
+@app.post("/contact/interactions/")
 def discord_contact_interactions(req: Request):
     signature = req.headers.get('x-signature-ed25519')
     timestamp = req.headers.get('x-signature-timestamp')

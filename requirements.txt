@@ -10,3 +10,4 @@ aiocache
 jinja2
 toml
 datetime
+loguru
