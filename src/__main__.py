@@ -2,8 +2,9 @@ import json
 import requests
 import re
 import robyn
-
 import discord
+import logging
+
 from requests_oauthlib import OAuth2Session
 from robyn import Request, Response, logger
 from loguru import logger
@@ -16,6 +17,7 @@ from utils import Website
 
 app = Website(__file__)
 robyn.logger = logger
+logging.Logger = logger
 supabase: Client = create_client(app.env["DATABASE_URL"], app.env["DATABASE_KEY"])
 
 app.add_directory(
