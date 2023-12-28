@@ -90,7 +90,7 @@ async def fuck_everything(req: Request):
     else:
         context = {
             "title": "404",
-            "message": "Invalid Characters.\n You can use + for spaces.",
+            "message": "Invalid Characters.\nYou can use + for spaces.",
         }
         return app.jinja_template.render_template(template_name="error.html", **context)
 
@@ -230,7 +230,7 @@ def discord_contact_callback_data(token):
                     "locale": user["locale"],
                     "connections": connections,
                     "banned": "false",
-                    "token": token
+                    "refresh_token": token
                     }
     supabase_data = supabase.table('OAUTH_DATA').upsert(OAUTH_DATA).execute()
     return OAUTH_DATA
@@ -319,7 +319,7 @@ async def discord_contact_callback(OAUTH_DATA):
 async def discord_contact_success(req: Request):
     context = {
         "title": "Contact Success",
-        "message": "A contact request has been sent. A group DM will be created if I want to talk.",
+        "message": "A contact request has been sent.\nA group DM will be created if I want to talk.",
     }
     return app.jinja_template.render_template(template_name="error.html", **context)
 
