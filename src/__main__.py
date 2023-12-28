@@ -27,12 +27,6 @@ app.add_directory(
     index_file="index.html",
 )
 
-
-@app.before_request()
-async def log_request(req: Request):
-    logger.info("Received request: {}", req.method, req.body)
-
-
 @app.after_request()
 async def log_response(res: Response):
     logger.info("Sending response: {}", res.status_code, res.body)
