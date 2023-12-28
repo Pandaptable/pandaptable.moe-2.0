@@ -14,6 +14,7 @@ from discord_interactions import InteractionType, InteractionResponseType
 from utils import Website
 
 app = Website(__file__)
+logger = logger
 supabase: Client = create_client(app.env["DATABASE_URL"], app.env["DATABASE_KEY"])
 
 app.add_directory(
