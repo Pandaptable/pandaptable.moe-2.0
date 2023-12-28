@@ -25,12 +25,12 @@ app.add_directory(
 
 @app.before_request()
 async def log_request(req: Request):
-    logger.info(f"Received request: {s}", req.method)
+    logger.info(f"Received request: %s", req.method)
 
 
 @app.after_request()
 async def log_response(res: Response):
-    logger.info(f"Sending response: {s}", res.status_code, res.body)
+    logger.info(f"Sending response: %s", res.status_code, res.body)
 
 
 @app.startup_handler
