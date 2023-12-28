@@ -27,10 +27,6 @@ app.add_directory(
     index_file="index.html",
 )
 
-@app.after_request()
-async def log_response(res: Response):
-    logger.info("Sending response: {}", res.status_code, res.body)
-
 
 @app.startup_handler
 async def startup() -> None:
