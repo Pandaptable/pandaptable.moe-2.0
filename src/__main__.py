@@ -21,12 +21,6 @@ robyn.logger = logger
 
 supabase: Client = create_client(app.env["DATABASE_URL"], app.env["DATABASE_KEY"])
 
-app.add_directory(
-    route="/static",
-    directory_path="pandaptable.moe",
-    index_file="index.html",
-)
-
 
 @app.startup_handler
 async def startup() -> None:
@@ -40,6 +34,11 @@ async def startup() -> None:
 async def shutdown_handler() -> None:
     await app.client.close()
     logger.info("Shut down website & API")
+
+
+@app.get("/", const=True)
+async def root():
+    return app.jinja_template_static.render_template(template_name="index.html")
 
 
 @app.get("/version", const=True)

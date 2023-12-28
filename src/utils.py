@@ -20,6 +20,7 @@ class Website(Robyn):
         load_dotenv()
         self.client: discord.Client = discord.Client(intents=discord.Intents.none())
         self.jinja_template = JinjaTemplate(f"{str(Path.cwd())}/templates")
+        self.jinja_template_static = JinjaTemplate(f"{str(Path.cwd())}/pandaptable.moe")
         self.up_since: str = datetime.datetime.now(datetime.timezone.utc).strftime(
             "%m/%d/%Y, %H:%M:%S"
         )
