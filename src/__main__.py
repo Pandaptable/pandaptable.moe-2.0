@@ -4,7 +4,7 @@ import re
 
 import discord
 from requests_oauthlib import OAuth2Session
-from robyn import Request, Response
+from robyn import Request, Response, logger
 from loguru import logger
 from datetime import datetime
 from supabase import create_client, Client
@@ -25,7 +25,7 @@ app.add_directory(
 
 @app.before_request()
 async def log_request(req: Request):
-    logger.info("Received request: {}", req.method)
+    logger.info("Received request: {}", req.method, req.body)
 
 
 @app.after_request()
@@ -318,7 +318,7 @@ async def discord_contact_success(req: Request):
     }
     return app.jinja_template.render_template(template_name="error.html", **context)
 
-@app.post("/contact/interactions/")
+@app.post("/contact/interactions")
 def discord_contact_interactions(req: Request):
     signature = req.headers.get('x-signature-ed25519')
     timestamp = req.headers.get('x-signature-timestamp')
