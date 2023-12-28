@@ -20,6 +20,7 @@ robyn.logger = logger
 logging.Logger.debug = logger.debug
 logging.Logger.info = logger.info
 logging.Logger.warning = logger.warning
+logging.Logger.warn = logger.warning
 logging.Logger.error = logger.error
 logging.Logger.critical = logger.critical
 logging.Logger.exception = logger.exception
