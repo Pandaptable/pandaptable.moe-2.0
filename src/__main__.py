@@ -4,6 +4,7 @@ import re
 import robyn
 import discord
 import logging
+import sys
 
 from requests_oauthlib import OAuth2Session
 from robyn import Request, Response, logger
@@ -17,13 +18,6 @@ from utils import Website
 
 app = Website(__file__)
 robyn.logger = logger
-logging.Logger.debug = logger.debug
-logging.Logger.info = logger.info
-logging.Logger.warning = logger.warning
-logging.Logger.warn = logger.warning
-logging.Logger.error = logger.error
-logging.Logger.critical = logger.critical
-logging.Logger.exception = logger.exception
 
 supabase: Client = create_client(app.env["DATABASE_URL"], app.env["DATABASE_KEY"])
 
