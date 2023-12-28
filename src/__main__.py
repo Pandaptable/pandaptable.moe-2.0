@@ -17,7 +17,7 @@ app = Website(__file__)
 supabase: Client = create_client(app.env["DATABASE_URL"], app.env["DATABASE_KEY"])
 
 app.add_directory(
-    route="/",
+    route="/static",
     directory_path="pandaptable.moe",
     index_file="index.html",
 )
@@ -25,12 +25,12 @@ app.add_directory(
 
 @app.before_request()
 async def log_request(req: Request):
-    logger.info(f"Received request: %s", req.method)
+    logger.info("Received request: {}", req.method)
 
 
 @app.after_request()
 async def log_response(res: Response):
-    logger.info(f"Sending response: %s", res.status_code, res.body)
+    logger.info("Sending response: {}", res.status_code, res.body)
 
 
 @app.startup_handler
