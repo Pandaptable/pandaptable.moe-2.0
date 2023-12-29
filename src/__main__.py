@@ -423,6 +423,7 @@ async def discord_contact_interactions(req: Request):
             ],
         },
         headers={"Content-Type": "application/json", "Authorization": f"Bot {app.env['TOKEN']}"},
+        status_code=200,
     )
 
 
