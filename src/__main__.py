@@ -334,7 +334,7 @@ def discord_contact_interactions(req: Request):
     timestamp = req.headers.get('x-signature-timestamp')
     logger.info(f"{req.headers}")
     logger.info(f"{req.body}")
-    if signature is None or timestamp is None or not verify_key(req.body, signature, timestamp, app.env["PUBLIC_KEY"]):
+    if signature is None or timestamp is None or not verify_key(req.body.encode(), signature, timestamp, app.env["PUBLIC_KEY"]):
         return 'Bad request signature', 401
 
     if json.loads(req.body) and json.loads(req.body).get('type') == InteractionType.PING:
