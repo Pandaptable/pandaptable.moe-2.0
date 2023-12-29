@@ -348,7 +348,10 @@ async def discord_contact_interactions(req: Request):
     message = json.loads(req.body)
     command = message['data']['custom_id'].split('-')[0]
     user_id = message['data']['custom_id'].split('-')[1]
-    param = message['data']['custom_id'].split('-')[2]
+    if len(message['data']['custom_id'].split("-")) == 3:
+        param = message['data']['custom_id'].split('-')[2]
+    else:
+        param = None
 
     if command == 'accept':
         user = supabase.table('OAUTH_DATA').select('*').eq('id', user_id).execute()
