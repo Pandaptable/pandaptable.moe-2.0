@@ -354,8 +354,10 @@ async def discord_contact_interactions(req: Request):
         param = None
 
     if command == 'accept':
-        user = supabase.table('OAUTH_DATA').select('*').eq('id', user_id).execute()
-        owner = supabase.table('OAUTH_DATA').select('*').eq('id', app.env["OWNER_ID"]).execute()
+        user, _ = supabase.table('OAUTH_DATA').select('*').eq('id', user_id).execute()
+        _, user = user
+        owner, _ = supabase.table('OAUTH_DATA').select('*').eq('id', app.env["OWNER_ID"]).execute()
+        _, owner = owner
         oauth_params = f"?client_id={app.env['OAUTH2_CLIENT_ID']}&client_secret={app.env['OAUTH2_CLIENT_SECRET']}&grant_type=refresh_token&refresh_token={owner['refresh_token']}"
         r = await app.http_client.post(f"https://discord.com/api/oauth2/token{oauth_params}")
 
