@@ -463,33 +463,33 @@ async def discord_contact_interactions(req: Request):
         status_code=200,
         )
         
-        if command == 'ban':
-            supabase.table('OAUTH_DATA').update('banned', 'true').eq('id', user_id).execute()
-            return Response(
-            body=json.dumps({
-                "type": 7,
-                "data": {
-                    "embeds": message['message']['embeds'],
-                    "components": [
-                        {
-                            "type": 1,
-                            "components": [
-                                {
-                                    "type": 2,
-                                    "label": "User banned",
-                                    "style": 4,
-                                    "custom-id": "",
-                                    "disabled": 0
-                                }
-                            ],
-                        }
-                    ],
-                },
-            }
-            ),
-            headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
-            status_code=200,
-            )
+    if command == 'ban':
+        supabase.table('OAUTH_DATA').update('banned', 'true').eq('id', user_id).execute()
+        return Response(
+        body=json.dumps({
+            "type": 7,
+            "data": {
+                "embeds": message['message']['embeds'],
+                "components": [
+                    {
+                        "type": 1,
+                        "components": [
+                            {
+                                "type": 2,
+                                "label": "User banned",
+                                "style": 4,
+                                "custom-id": "",
+                                "disabled": 0
+                            }
+                        ],
+                    }
+                ],
+            },
+        }
+        ),
+        headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
+        status_code=200,
+        )
     if command == 'close':
         await app.http_client.delete(
             f"https://discord.com/api/v10/channels/{param}/recipients/{user_id}",
@@ -503,29 +503,29 @@ async def discord_contact_interactions(req: Request):
             })
         supabase.table('OAUTH_DATA').delete().eq('id', user_id).execute()
         return Response(
-            body=json.dumps({
-                "type": 7,
-                "data": {
-                    "embeds": message['message']['embeds'],
-                    "components": [
-                        {
-                            "type": 1,
-                            "components": [
-                                {
-                                    "type": 2,
-                                    "label": "DM Closed",
-                                    "style": 4,
-                                    "custom-id": "",
-                                    "disabled": 0
-                                }
-                            ],
-                        }
-                    ],
-                },
-            }
-            ),
-            headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
-            status_code=200,
-            )
+        body=json.dumps({
+            "type": 7,
+            "data": {
+                "embeds": message['message']['embeds'],
+                "components": [
+                    {
+                        "type": 1,
+                        "components": [
+                            {
+                                "type": 2,
+                                "label": "DM Closed",
+                                "style": 4,
+                                "custom_id": "",
+                                "disabled": 0
+                            }
+                        ],
+                    }
+                ],
+            },
+        }
+        ),
+        headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
+        status_code=200,
+    )
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
