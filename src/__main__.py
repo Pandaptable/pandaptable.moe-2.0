@@ -29,12 +29,12 @@ app.add_directory(
 
 @app.before_request()
 async def log_request(req: Request):
-    logger.info("Received request: {}", req.method, req.body)
+    logger.info("Received request: {} {} from {}", req.method, req.url, req.ip_addr)
     return req
 
 @app.after_request()
 async def log_response(res: Response):
-    logger.info("Sending response: {}", res.status_code, res.body)
+    logger.info("Sending response: {} {}", res.status_code, res.url)
     return res
 
 
