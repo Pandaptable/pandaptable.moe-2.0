@@ -416,7 +416,7 @@ async def discord_contact_interactions(req: Request):
                                 "type": 2,
                                 "label": "See DM",
                                 "style": 5,
-                                "url": f"discord://-/channels/@me/{channel['id']}",
+                                "url": f"https://discord.com/channels/@me/{channel['id']}",
                             },
                             {
                                 "type": 2,
@@ -456,7 +456,7 @@ async def discord_contact_interactions(req: Request):
                                 "label": "Request Denied",
                                 "style": 4,
                                 "custom-id": "na",
-                                "disabled": 0
+                                "disabled": "false"
                             }
                         ],
                     }
@@ -484,7 +484,7 @@ async def discord_contact_interactions(req: Request):
                                     "label": "User banned",
                                     "style": 4,
                                     "custom-id": "na",
-                                    "disabled": 0
+                                    "disabled": "false"
                                 }
                             ],
                         }
@@ -521,7 +521,7 @@ async def discord_contact_interactions(req: Request):
                                     "label": "DM Closed",
                                     "style": 4,
                                     "custom-id": "na",
-                                    "disabled": 0
+                                    "disabled": "false"
                                 }
                             ],
                         }
