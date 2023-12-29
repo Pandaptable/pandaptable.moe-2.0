@@ -212,8 +212,7 @@ async def discord_contact_callback_parse(req: Request):
         authorization_response=f"{req.url.scheme}://{req.url.host}{req.url.path}",
         code=code
         )
-    data = discord_contact_callback_data(token)
-    return await discord_contact_callback(data)
+    discord_contact_callback_data(token)
 
 def discord_contact_callback_data(token):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], token=token)
@@ -241,7 +240,12 @@ def discord_contact_callback_data(token):
                     "refresh_token": token['refresh_token'],
                     }
     supabase_data = supabase.table('OAUTH_DATA').upsert(OAUTH_DATA).execute()
-    return OAUTH_DATA
+    banned_status, _ = supabase.table('OAUTH_DATA').select('*').eq('id', OAUTH_DATA['id']).execute()
+    _, banned_status = banned_status
+    if banned_status[0]["banned"] == false:
+        return OAUTH_DATA, discord_contact_callback(data)
+    else:
+        return discord_contact_banned()
 
 def num_to_roman(n: int) -> str:
     return chr(0x215F + n)
@@ -328,6 +332,14 @@ async def discord_contact_success(req: Request):
     context = {
         "title": "Contact Success",
         "message": "A contact request has been sent.\nA group DM will be created if I want to talk.",
+    }
+    return app.jinja_template.render_template(template_name="error.html", **context)
+
+@app.get("/contact/banned")
+async def discord_contact_banned(req: Request):
+    context = {
+        "title": "L + ratio",
+        "message": "I do not want to contact you and banned you from doing so :smileu:",
     }
     return app.jinja_template.render_template(template_name="error.html", **context)
 
@@ -428,6 +440,98 @@ async def discord_contact_interactions(req: Request):
         headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
         status_code=200,
     )
-
+    
+    if command == 'deny':
+        supabase.table('OAUTH_DATA').delete().eq('id', user_id).execute()
+        return Response(
+        body=json.dumps({
+            "type": 7,
+            "data": {
+                "embeds": message['message']['embeds'],
+                "components": [
+                    {
+                        "type": 1,
+                        "components": [
+                            {
+                                "type": 2,
+                                "label": "Request Denied",
+                                "style": 4,
+                                "custom-id": "na",
+                                "disabled": true
+                            }
+                        ],
+                    }
+                ],
+            },
+        }
+        ),
+        headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
+        status_code=200,
+        )
+        
+        if command == 'ban':
+            supabase.table('OAUTH_DATA').update('banned', 'true').eq('id', user_id).execute()
+            return Response(
+            body=json.dumps({
+                "type": 7,
+                "data": {
+                    "embeds": message['message']['embeds'],
+                    "components": [
+                        {
+                            "type": 1,
+                            "components": [
+                                {
+                                    "type": 2,
+                                    "label": "User banned",
+                                    "style": 4,
+                                    "custom-id": "na",
+                                    "disabled": true
+                                }
+                            ],
+                        }
+                    ],
+                },
+            }
+            ),
+            headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
+            status_code=200,
+            )
+    if command == 'close':
+        app.http_client.delete(
+            f"https://discord.com/api/channels/{param}/recipients/{user_id}",
+            headers={"Content-Type": "application/json",
+                     "Authorization": f"Bot {app.env['TOKEN']}"
+            })
+        app.http_client.delete(
+            f"https://discord.com/api/channels/{param}/recipients/{app.env['OWNER_ID']}",
+            headers={"Content-Type": "application/json",
+                     "Authorization": f"Bot {app.env['TOKEN']}"
+            })
+        supabase.table('OAUTH_DATA').delete().eq('id', user_id).execute()
+        return Response(
+            body=json.dumps({
+                "type": 7,
+                "data": {
+                    "embeds": message['message']['embeds'],
+                    "components": [
+                        {
+                            "type": 1,
+                            "components": [
+                                {
+                                    "type": 2,
+                                    "label": "DM Closed",
+                                    "style": 4,
+                                    "custom-id": "na",
+                                    "disabled": true
+                                }
+                            ],
+                        }
+                    ],
+                },
+            }
+            ),
+            headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
+            status_code=200,
+            )
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
