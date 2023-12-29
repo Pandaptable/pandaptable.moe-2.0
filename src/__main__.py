@@ -497,13 +497,13 @@ async def discord_contact_interactions(req: Request):
             status_code=200,
             )
     if command == 'close':
-        r = app.http_client.delete(
+        await app.http_client.delete(
             f"https://discord.com/api/v10/channels/{param}/recipients/{user_id}",
             headers={"Content-Type": "application/json",
                      "Authorization": f"Bot {app.env['TOKEN']}"
             })
         logging.info(r.json())
-        r = app.http_client.delete(
+        await app.http_client.delete(
             f"https://discord.com/api/v10/channels/{param}/recipients/{app.env['OWNER_ID']}",
             headers={"Content-Type": "application/json",
                      "Authorization": f"Bot {app.env['TOKEN']}"
