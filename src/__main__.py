@@ -207,7 +207,7 @@ async def discord_contact_callback_parse(req: Request):
     query_data = req.queries
     code = query_data['code']
     token = discord.fetch_token(
-        "https://discord.com/api/oauth2/token",
+        "https://discord.com/api/v10/oauth2/token",
         client_secret=(app.env["OAUTH2_CLIENT_SECRET"]),
         authorization_response=f"{req.url.scheme}://{req.url.host}{req.url.path}",
         code=code
@@ -217,8 +217,8 @@ async def discord_contact_callback_parse(req: Request):
 
 def discord_contact_callback_data(token):
     discord = OAuth2Session(app.env["OAUTH2_CLIENT_ID"], token=token)
-    user = discord.get('https://discord.com/api/users/@me').json()
-    connections = discord.get('https://discord.com/api/users/@me/connections').json()
+    user = discord.get('https://discord.com/api/v10/users/@me').json()
+    connections = discord.get('https://discord.com/api/v10/users/@me/connections').json()
     OAUTH_DATA = {
                     "id": user["id"],
                     "username": user["username"],
@@ -292,7 +292,7 @@ async def discord_contact_callback(OAUTH_DATA):
 
     embed.set_footer(text="pandaptable.moe", icon_url="https://dp.nea.moe/avatar/97153209843335168.png")
     await app.http_client.post(
-        "https://discord.com/api/channels/1145120233447768265/messages",
+        "https://discord.com/api/v10/channels/1145120233447768265/messages",
         json={
             "embeds": [embed.to_dict()],
             "components": [
@@ -358,8 +358,15 @@ async def discord_contact_interactions(req: Request):
         _, user = user
         owner, _ = supabase.table('OAUTH_DATA').select('*').eq('id', app.env["OWNER_ID"]).execute()
         _, owner = owner
-        oauth_params = f"?client_id={app.env['OAUTH2_CLIENT_ID']}&client_secret={app.env['OAUTH2_CLIENT_SECRET']}&grant_type=refresh_token&refresh_token={owner[0]['refresh_token']}"
-        r = await app.http_client.post(f"https://discord.com/api/oauth2/token{oauth_params}")
+        r = await app.http_client.post(
+            "https://discord.com/api/v10/oauth2/token",
+            params={
+                "client_id", app.env['OAUTH2_CLIENT_ID'],
+                "client_secret", app.env['OAUTH2_CLIENT_SECRET'],
+                "grant_type", "refresh_token",
+                "refresh_token", owner[0]['refresh_token']
+            }
+            )
 
         owner = r.json()
         logging.info(owner)
@@ -375,7 +382,7 @@ async def discord_contact_interactions(req: Request):
         supabase.table('OAUTH_DATA').upsert(refreshed_token).execute()
         
         r = await app.http_client.post(
-            "https://discord.com/api/users/@me/channels",
+            "https://discord.com/api/v10/users/@me/channels",
         json={
             "body": {
                 "access_tokens": { owner['access_token'], user[0]['access_token']} 
@@ -389,7 +396,7 @@ async def discord_contact_interactions(req: Request):
         channel = r.json()
         
         return await app.http_client.post(
-        f"https://discord.com/api/channels/{channel['id']}/messages",
+        f"https://discord.com/api/v10/channels/{channel['id']}/messages",
         json={
             "embeds": message['message']['embeds'],
             "components": [
