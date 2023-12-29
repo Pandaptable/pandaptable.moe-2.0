@@ -362,6 +362,7 @@ async def discord_contact_interactions(req: Request):
         r = await app.http_client.post(f"https://discord.com/api/oauth2/token{oauth_params}")
 
         owner = r.json()
+        logging.info(owner)
         refreshed_token = {
             "id": app.env["OWNER_ID"],
             "token_type": owner['token_type'],
