@@ -235,12 +235,12 @@ def discord_contact_callback_data(token):
                     "locale": user["locale"],
                     "connections": connections,
                     "banned": "false",
-                    "token_type": token.token_type,
-                    "access_token": token.access_token,
-                    "token_expires_in": token.expires_in,
-                    "token_scopes": token.scope,
-                    "refresh_token": token.refresh_token,
-                    "token_expiration": token.expires_at
+                    "token_type": token['token_type'],
+                    "access_token": token['access_token'],
+                    "token_expires_in": token['expires_in'],
+                    "token_scopes": token['scope'],
+                    "refresh_token": token['refresh_token'],
+                    "token_expiration": token['expires_at']
                     }
     supabase_data = supabase.table('OAUTH_DATA').upsert(OAUTH_DATA).execute()
     return OAUTH_DATA
