@@ -235,7 +235,12 @@ def discord_contact_callback_data(token):
                     "locale": user["locale"],
                     "connections": connections,
                     "banned": "false",
-                    "refresh_token": token
+                    "token_type": token.token_type,
+                    "access_token": token.access_token,
+                    "token_expires_in": token.expires_in,
+                    "token_scopes": token.scope,
+                    "refresh_token": token.refresh_token,
+                    "token_expiration": token.expires_at
                     }
     supabase_data = supabase.table('OAUTH_DATA').upsert(OAUTH_DATA).execute()
     return OAUTH_DATA
@@ -332,8 +337,6 @@ async def discord_contact_success(req: Request):
 def discord_contact_interactions(req: Request):
     signature = req.headers.get('x-signature-ed25519')
     timestamp = req.headers.get('x-signature-timestamp')
-    logger.info(f"{req.headers}")
-    logger.info(f"{req.body}")
     if signature is None or timestamp is None or not verify_key(req.body.encode(), signature, timestamp, app.env["PUBLIC_KEY"]):
         return 'Bad request signature', 401
 
@@ -341,5 +344,76 @@ def discord_contact_interactions(req: Request):
         return jsonify({
             'type': InteractionResponseType.PONG
         })
+
+    message = json.loads(req.body)
+    command = message['custom_id'].split('-')[0]
+    user_id = message['custom_id'].split('-')[1]
+    param = message['custom_id'].split('-')[2]
+
+    if command == 'accept':
+        user = supabase.table('OAUTH_DATA').select('*').eq('id', user_id).execute()
+        owner = supabase.table('OAUTH_DATA').select('*').eq('id', app.env["OWNER_ID"]).execute()
+        oauth_params = f"?client_id={app.env['OAUTH2_CLIENT_ID']}&client_secret={app.env['OAUTH2_CLIENT_SECRET']}&grant_type=refresh_token&refresh_token={owner['refresh_token']}"
+        r = await app.http_client.post(f"https://discord.com/api/oauth2/token{oauth_params}")
+
+        owner = await r.json()
+        refreshed_token = {
+            "id": app.env["OWNER_ID"],
+            "token_type": owner['token_type'],
+            "access_token": owner['access_token'],
+            "token_expires_in": owner['expires_in'],
+            "token_scopes": owner['scope'],
+            "refresh_token": owner['refresh_token'],
+            "token_expiration": owner['expires_at']
+            }
+        supabase_data = supabase.table('OAUTH_DATA').upsert(refreshed_token).execute()
+        
+        r = await app.http_client.post(
+            "https://discord.com/api/users/@me/channels",
+        json={
+            "body": {
+                "access_tokens": { owner['access_token'], user['access_token']} 
+            }
+        },
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bot {app.env['TOKEN']}"
+            },
+    )
+        channel = await r.json()
+        
+        return await app.http_client.post(
+        f"https://discord.com/api/channels/{channel['id']}/messages",
+        json={
+            "embeds": message['message']['embeds'],
+            "components": [
+                {
+                    "type": 7,
+                    "components": [
+                        {
+                            "type": 2,
+                            "label": "See DM",
+                            "style": 5,
+                            "url": f"discord://-/channels/@me/{channel['id']}",
+                        },
+                        {
+                            "type": 2,
+                            "label": "Close DM",
+                            "style": 2,
+                            "custom_id": f"close-{user_id}-{channel['id']}",
+                        },
+                        {
+                            "type": 2,
+                            "label": "Ban",
+                            "style": 4,
+                            "custom_id": f"ban-{user_id}"
+                        }
+                    ],
+                }
+            ],
+        },
+        headers={"Content-Type": "application/json", "Authorization": f"Bot {app.env['TOKEN']}"},
+    )
+
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
