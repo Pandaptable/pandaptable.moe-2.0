@@ -357,83 +357,6 @@ async def discord_contact_interactions(req: Request):
         param = message['data']['custom_id'].split('-')[2]
     else:
         param = None
-
-    if command == 'accept':
-        user, _ = supabase.table('OAUTH_DATA').select('*').eq('id', user_id).execute()
-        _, user = user
-        owner, _ = supabase.table('OAUTH_DATA').select('*').eq('id', app.env["OWNER_ID"]).execute()
-        _, owner = owner
-        r = await app.http_client.post(
-            "https://discord.com/api/v10/oauth2/token",
-            data={
-                "client_id": app.env['OAUTH2_CLIENT_ID'],
-                "client_secret": app.env['OAUTH2_CLIENT_SECRET'],
-                "grant_type": "refresh_token",
-                "refresh_token": owner[0]['refresh_token']
-            },
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-            )
-
-        owner = r.json()
-        refreshed_token = {
-            "id": app.env["OWNER_ID"],
-            "token_type": owner['token_type'],
-            "access_token": owner['access_token'],
-            "token_expires_in": owner['expires_in'],
-            "token_scopes": owner['scope'],
-            "refresh_token": owner['refresh_token'],
-            }
-        supabase.table('OAUTH_DATA').upsert(refreshed_token).execute()
-        
-        r = await app.http_client.post(
-            "https://discord.com/api/v10/users/@me/channels",
-        json={
-            "access_tokens": [ owner['access_token'], user[0]['access_token']]
-        },
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bot {app.env['TOKEN']}"
-            },
-    )
-        channel = r.json()
-        return Response(
-        body=json.dumps({
-            "type": 7,
-            "data": {
-                "embeds": message['message']['embeds'],
-                "components": [
-                    {
-                        "type": 1,
-                        "components": [
-                            {
-                                "type": 2,
-                                "label": "See DM",
-                                "style": 5,
-                                "url": f"https://discord.com/channels/@me/{channel['id']}",
-                            },
-                            {
-                                "type": 2,
-                                "label": "Close DM",
-                                "style": 2,
-                                "custom_id": f"close-{user_id}-{channel['id']}",
-                            },
-                            {
-                                "type": 2,
-                                "label": "Ban",
-                                "style": 4,
-                                "custom_id": f"ban-{user_id}"
-                            }
-                        ],
-                    }
-                ],
-            },
-        }
-        ),
-        headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
-        status_code=200,
-    )
     
     if command == 'deny':
         supabase.table('OAUTH_DATA').delete().eq('id', user_id).execute()
@@ -517,6 +440,83 @@ async def discord_contact_interactions(req: Request):
                                 "style": 4,
                                 "custom_id": "",
                                 "disabled": 0
+                            }
+                        ],
+                    }
+                ],
+            },
+        }
+        ),
+        headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
+        status_code=200,
+    )
+
+    if command == 'accept':
+        user, _ = supabase.table('OAUTH_DATA').select('*').eq('id', user_id).execute()
+        _, user = user
+        owner, _ = supabase.table('OAUTH_DATA').select('*').eq('id', app.env["OWNER_ID"]).execute()
+        _, owner = owner
+        r = await app.http_client.post(
+            "https://discord.com/api/v10/oauth2/token",
+            data={
+                "client_id": app.env['OAUTH2_CLIENT_ID'],
+                "client_secret": app.env['OAUTH2_CLIENT_SECRET'],
+                "grant_type": "refresh_token",
+                "refresh_token": owner[0]['refresh_token']
+            },
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+            )
+
+        owner = r.json()
+        refreshed_token = {
+            "id": app.env["OWNER_ID"],
+            "token_type": owner['token_type'],
+            "access_token": owner['access_token'],
+            "token_expires_in": owner['expires_in'],
+            "token_scopes": owner['scope'],
+            "refresh_token": owner['refresh_token'],
+            }
+        supabase.table('OAUTH_DATA').upsert(refreshed_token).execute()
+        
+        r = await app.http_client.post(
+            "https://discord.com/api/v10/users/@me/channels",
+        json={
+            "access_tokens": [ owner['access_token'], user[0]['access_token']]
+        },
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bot {app.env['TOKEN']}"
+            },
+    )
+        channel = r.json()
+        return Response(
+        body=json.dumps({
+            "type": 7,
+            "data": {
+                "embeds": message['message']['embeds'],
+                "components": [
+                    {
+                        "type": 1,
+                        "components": [
+                            {
+                                "type": 2,
+                                "label": "See DM",
+                                "style": 5,
+                                "url": f"https://discord.com/channels/@me/{channel['id']}",
+                            },
+                            {
+                                "type": 2,
+                                "label": "Close DM",
+                                "style": 2,
+                                "custom_id": f"close-{user_id}-{channel['id']}",
+                            },
+                            {
+                                "type": 2,
+                                "label": "Ban",
+                                "style": 4,
+                                "custom_id": f"ban-{user_id}"
                             }
                         ],
                     }
