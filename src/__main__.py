@@ -393,7 +393,7 @@ async def discord_contact_interactions(req: Request):
         channel = r.json()
         logging.info(channel)
         return Response(
-        body={
+        body=json.dumps({
             "embeds": message['message']['embeds'],
             "type": 7,
             "components": [
@@ -421,10 +421,10 @@ async def discord_contact_interactions(req: Request):
                     ],
                 }
             ],
-        },
+        }
+        ),
         headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
         status_code=200,
-        response_type="json"
     )
 
 
