@@ -7,11 +7,11 @@ import logging
 import sys
 
 from requests_oauthlib import OAuth2Session
-from robyn import Request, Response, logger
+from robyn import Request, Response, logger, jsonify
 from loguru import logger
 from datetime import datetime
 from supabase import create_client, Client
-from discord_interactions import verify_key
+from discord_interactions import verify_key, InteractionType, InteractionResponseType
 
 
 from utils import Website
@@ -330,16 +330,14 @@ async def discord_contact_success(req: Request):
 
 @app.post("/contact/interactions")
 def discord_contact_interactions(req: Request):
-    signature = req.headers.get('x-signature-ed25519')
-    timestamp = req.headers.get('x-signature-timestamp')
-    if not verify_key(req.body, signature, timestamp, app.env["PUBLIC_KEY"]):
+    signature = request.headers.get('X-Signature-Ed25519')
+    timestamp = request.headers.get('X-Signature-Timestamp')
+    if signature is None or timestamp is None or not verify_key(req.body, signature, timestamp, app.env["PUBLIC_KEY"]):
         return Response(status_code=401)
-    else:
-        if req['type'] == 1:
-            return {
-                "status_code": 200,
-                "headers": {"Content-Type": "application/json;charset=UTF-8"},
-                "type": 1
-            }
+
+    if json.loads(req.body) and json.loads(req.body).get('type') == InteractionType.PING:
+        return jsonify({
+            'type': InteractionResponseType.PONG
+        })
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
