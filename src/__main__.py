@@ -32,11 +32,6 @@ async def log_request(req: Request):
     logger.info("Received request: {} {}", req.method, f"{req.url.scheme}://{req.url.host}{req.url.path}")
     return req
 
-@app.after_request()
-async def log_response(res: Response):
-    logger.info("Sending response: {}", res.status_code)
-    return res
-
 
 @app.startup_handler
 async def startup() -> None:
