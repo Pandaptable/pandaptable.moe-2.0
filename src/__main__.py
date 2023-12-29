@@ -358,7 +358,7 @@ async def discord_contact_interactions(req: Request):
         _, user = user
         owner, _ = supabase.table('OAUTH_DATA').select('*').eq('id', app.env["OWNER_ID"]).execute()
         _, owner = owner
-        oauth_params = f"?client_id={app.env['OAUTH2_CLIENT_ID']}&client_secret={app.env['OAUTH2_CLIENT_SECRET']}&grant_type=refresh_token&refresh_token={owner['refresh_token']}"
+        oauth_params = f"?client_id={app.env['OAUTH2_CLIENT_ID']}&client_secret={app.env['OAUTH2_CLIENT_SECRET']}&grant_type=refresh_token&refresh_token={owner[0]['refresh_token']}"
         r = await app.http_client.post(f"https://discord.com/api/oauth2/token{oauth_params}")
 
         owner = await r.json()
@@ -371,13 +371,13 @@ async def discord_contact_interactions(req: Request):
             "refresh_token": owner['refresh_token'],
             "token_expiration": owner['expires_at']
             }
-        supabase_data = supabase.table('OAUTH_DATA').upsert(refreshed_token).execute()
+        supabase.table('OAUTH_DATA').upsert(refreshed_token).execute()
         
         r = await app.http_client.post(
             "https://discord.com/api/users/@me/channels",
         json={
             "body": {
-                "access_tokens": { owner['access_token'], user['access_token']} 
+                "access_tokens": { owner['access_token'], user[0]['access_token']} 
             }
         },
         headers={
