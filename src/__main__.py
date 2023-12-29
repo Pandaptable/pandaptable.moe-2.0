@@ -242,7 +242,7 @@ def discord_contact_callback_data(token):
     supabase_data = supabase.table('OAUTH_DATA').upsert(OAUTH_DATA).execute()
     banned_status, _ = supabase.table('OAUTH_DATA').select('*').eq('id', OAUTH_DATA['id']).execute()
     _, banned_status = banned_status
-    if banned_status[0]["banned"] == false:
+    if banned_status[0]["banned"] == False:
         return OAUTH_DATA, discord_contact_callback(data)
     else:
         return discord_contact_banned()
