@@ -502,13 +502,11 @@ async def discord_contact_interactions(req: Request):
             headers={"Content-Type": "application/json",
                      "Authorization": f"Bot {app.env['TOKEN']}"
             })
-        logging.info(r.json())
         await app.http_client.delete(
             f"https://discord.com/api/v10/channels/{param}/recipients/{app.env['OWNER_ID']}",
             headers={"Content-Type": "application/json",
                      "Authorization": f"Bot {app.env['TOKEN']}"
             })
-        logging.info(r.json())
         supabase.table('OAUTH_DATA').delete().eq('id', user_id).execute()
         return Response(
             body=json.dumps({
