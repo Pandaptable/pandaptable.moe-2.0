@@ -361,7 +361,7 @@ async def discord_contact_interactions(req: Request):
         oauth_params = f"?client_id={app.env['OAUTH2_CLIENT_ID']}&client_secret={app.env['OAUTH2_CLIENT_SECRET']}&grant_type=refresh_token&refresh_token={owner[0]['refresh_token']}"
         r = await app.http_client.post(f"https://discord.com/api/oauth2/token{oauth_params}")
 
-        owner = await r.json()
+        owner = r.json()
         refreshed_token = {
             "id": app.env["OWNER_ID"],
             "token_type": owner['token_type'],
@@ -385,7 +385,7 @@ async def discord_contact_interactions(req: Request):
             "Authorization": f"Bot {app.env['TOKEN']}"
             },
     )
-        channel = await r.json()
+        channel = r.json()
         
         return await app.http_client.post(
         f"https://discord.com/api/channels/{channel['id']}/messages",
