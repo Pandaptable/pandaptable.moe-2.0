@@ -403,7 +403,6 @@ async def discord_contact_interactions(req: Request):
             },
     )
         channel = r.json()
-        logging.info(channel)
         return Response(
         body=json.dumps({
             "type": 7,
@@ -457,7 +456,7 @@ async def discord_contact_interactions(req: Request):
                                 "label": "Request Denied",
                                 "style": 4,
                                 "custom-id": "na",
-                                "disabled": True
+                                "disabled": 0
                             }
                         ],
                     }
@@ -485,7 +484,7 @@ async def discord_contact_interactions(req: Request):
                                     "label": "User banned",
                                     "style": 4,
                                     "custom-id": "na",
-                                    "disabled": True
+                                    "disabled": 0
                                 }
                             ],
                         }
@@ -522,7 +521,7 @@ async def discord_contact_interactions(req: Request):
                                     "label": "DM Closed",
                                     "style": 4,
                                     "custom-id": "na",
-                                    "disabled": True
+                                    "disabled": 0
                                 }
                             ],
                         }
