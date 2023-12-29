@@ -392,40 +392,37 @@ async def discord_contact_interactions(req: Request):
     )
         channel = r.json()
         logging.info(channel)
-        return Response(
-        body=json.dumps({
-            "embeds": message['message']['embeds'],
+        return jsonify({
             "type": 7,
-            "components": [
-                {
-                    "type": 1,
-                    "components": [
-                        {
-                            "type": 2,
-                            "label": "See DM",
-                            "style": 5,
-                            "url": f"discord://-/channels/@me/{channel['id']}",
-                        },
-                        {
-                            "type": 2,
-                            "label": "Close DM",
-                            "style": 2,
-                            "custom_id": f"close-{user_id}-{channel['id']}",
-                        },
-                        {
-                            "type": 2,
-                            "label": "Ban",
-                            "style": 4,
-                            "custom_id": f"ban-{user_id}"
-                        }
-                    ],
-                }
-            ],
-        }
-        ),
-        headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
-        status_code=200,
-    )
+            "data": {
+                "embeds": message['message']['embeds'],
+                "components": [
+                    {
+                        "type": 1,
+                        "components": [
+                            {
+                                "type": 2,
+                                "label": "See DM",
+                                "style": 5,
+                                "url": f"discord://-/channels/@me/{channel['id']}",
+                            },
+                            {
+                                "type": 2,
+                                "label": "Close DM",
+                                "style": 2,
+                                "custom_id": f"close-{user_id}-{channel['id']}",
+                            },
+                            {
+                                "type": 2,
+                                "label": "Ban",
+                                "style": 4,
+                                "custom_id": f"ban-{user_id}"
+                            }
+                        ],
+                    }
+                ],
+            },
+    })
 
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
