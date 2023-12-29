@@ -450,8 +450,8 @@ async def discord_contact_interactions(req: Request):
                                 "type": 2,
                                 "label": "Request Denied",
                                 "style": 4,
-                                "custom-id": "na",
-                                "disabled": "false"
+                                "custom-id": "",
+                                "disabled": 0
                             }
                         ],
                     }
@@ -478,8 +478,8 @@ async def discord_contact_interactions(req: Request):
                                     "type": 2,
                                     "label": "User banned",
                                     "style": 4,
-                                    "custom-id": "na",
-                                    "disabled": "false"
+                                    "custom-id": "",
+                                    "disabled": 0
                                 }
                             ],
                         }
@@ -515,8 +515,8 @@ async def discord_contact_interactions(req: Request):
                                     "type": 2,
                                     "label": "DM Closed",
                                     "style": 4,
-                                    "custom-id": "na",
-                                    "disabled": "false"
+                                    "custom-id": "",
+                                    "disabled": 0
                                 }
                             ],
                         }
