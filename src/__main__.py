@@ -392,13 +392,13 @@ async def discord_contact_interactions(req: Request):
     )
         channel = r.json()
         logging.info(channel)
-        return await app.http_client.post(
-        f"https://discord.com/api/v10/channels/{channel['id']}/messages",
-        json={
+        return Response(
+        body={
             "embeds": message['message']['embeds'],
+            "type": 7,
             "components": [
                 {
-                    "type": 7,
+                    "type": 1,
                     "components": [
                         {
                             "type": 2,
