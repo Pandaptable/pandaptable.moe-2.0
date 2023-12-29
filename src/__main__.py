@@ -330,8 +330,8 @@ async def discord_contact_success(req: Request):
 
 @app.post("/contact/interactions")
 def discord_contact_interactions(req: Request):
-    signature = request.headers.get('X-Signature-Ed25519')
-    timestamp = request.headers.get('X-Signature-Timestamp')
+    signature = req.headers.get('X-Signature-Ed25519')
+    timestamp = req.headers.get('X-Signature-Timestamp')
     if signature is None or timestamp is None or not verify_key(req.body, signature, timestamp, app.env["PUBLIC_KEY"]):
         return Response(status_code=401)
 
