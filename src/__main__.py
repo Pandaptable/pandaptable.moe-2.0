@@ -245,7 +245,7 @@ async def discord_contact_callback_data(token):
     if banned_status[0]["banned"] == False:
         return await discord_contact_callback(OAUTH_DATA)
     else:
-        return discord_contact_banned()
+        return app.redirect("/contact/banned")
 
 def num_to_roman(n: int) -> str:
     return chr(0x215F + n)
@@ -457,7 +457,7 @@ async def discord_contact_interactions(req: Request):
                                 "label": "Request Denied",
                                 "style": 4,
                                 "custom-id": "na",
-                                "disabled": true
+                                "disabled": True
                             }
                         ],
                     }
@@ -485,7 +485,7 @@ async def discord_contact_interactions(req: Request):
                                     "label": "User banned",
                                     "style": 4,
                                     "custom-id": "na",
-                                    "disabled": true
+                                    "disabled": True
                                 }
                             ],
                         }
@@ -522,7 +522,7 @@ async def discord_contact_interactions(req: Request):
                                     "label": "DM Closed",
                                     "style": 4,
                                     "custom-id": "na",
-                                    "disabled": true
+                                    "disabled": True
                                 }
                             ],
                         }
