@@ -346,6 +346,7 @@ async def discord_contact_interactions(req: Request):
         })
 
     message = json.loads(req.body)
+    logger.info(message)
     command = message['custom_id'].split('-')[0]
     user_id = message['custom_id'].split('-')[1]
     param = message['custom_id'].split('-')[2]
