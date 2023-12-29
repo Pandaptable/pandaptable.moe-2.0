@@ -497,16 +497,18 @@ async def discord_contact_interactions(req: Request):
             status_code=200,
             )
     if command == 'close':
-        app.http_client.delete(
-            f"https://discord.com/api/channels/{param}/recipients/{user_id}",
+        r = app.http_client.delete(
+            f"https://discord.com/api/v10/channels/{param}/recipients/{user_id}",
             headers={"Content-Type": "application/json",
                      "Authorization": f"Bot {app.env['TOKEN']}"
             })
-        app.http_client.delete(
-            f"https://discord.com/api/channels/{param}/recipients/{app.env['OWNER_ID']}",
+        logging.info(r.json())
+        r = app.http_client.delete(
+            f"https://discord.com/api/v10/channels/{param}/recipients/{app.env['OWNER_ID']}",
             headers={"Content-Type": "application/json",
                      "Authorization": f"Bot {app.env['TOKEN']}"
             })
+        logging.info(r.json())
         supabase.table('OAUTH_DATA').delete().eq('id', user_id).execute()
         return Response(
             body=json.dumps({
