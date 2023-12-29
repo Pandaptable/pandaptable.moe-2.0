@@ -234,13 +234,11 @@ def discord_contact_callback_data(token):
                     "mfa_enabled": user["mfa_enabled"],
                     "locale": user["locale"],
                     "connections": connections,
-                    "banned": "false",
                     "token_type": token['token_type'],
                     "access_token": token['access_token'],
                     "token_expires_in": token['expires_in'],
                     "token_scopes": token['scope'],
                     "refresh_token": token['refresh_token'],
-                    "token_expiration": token['expires_at']
                     }
     supabase_data = supabase.table('OAUTH_DATA').upsert(OAUTH_DATA).execute()
     return OAUTH_DATA
@@ -380,7 +378,6 @@ async def discord_contact_interactions(req: Request):
             "token_expires_in": owner['expires_in'],
             "token_scopes": owner['scope'],
             "refresh_token": owner['refresh_token'],
-            "token_expiration": owner['expires_at']
             }
         supabase.table('OAUTH_DATA').upsert(refreshed_token).execute()
         
