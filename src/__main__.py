@@ -361,10 +361,10 @@ async def discord_contact_interactions(req: Request):
         r = await app.http_client.post(
             "https://discord.com/api/v10/oauth2/token",
             params={
-                "client_id", app.env['OAUTH2_CLIENT_ID'],
-                "client_secret", app.env['OAUTH2_CLIENT_SECRET'],
-                "grant_type", "refresh_token",
-                "refresh_token", owner[0]['refresh_token']
+                "client_id": app.env['OAUTH2_CLIENT_ID'],
+                "client_secret": app.env['OAUTH2_CLIENT_SECRET'],
+                "grant_type": "refresh_token",
+                "refresh_token": owner[0]['refresh_token']
             }
             )
 
