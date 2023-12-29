@@ -370,7 +370,6 @@ async def discord_contact_interactions(req: Request):
             )
 
         owner = r.json()
-        logging.info(owner)
         refreshed_token = {
             "id": app.env["OWNER_ID"],
             "token_type": owner['token_type'],
@@ -394,7 +393,7 @@ async def discord_contact_interactions(req: Request):
             },
     )
         channel = r.json()
-        
+        logging.info(channel)
         return await app.http_client.post(
         f"https://discord.com/api/v10/channels/{channel['id']}/messages",
         json={
