@@ -385,7 +385,7 @@ async def discord_contact_interactions(req: Request):
             "https://discord.com/api/v10/users/@me/channels",
         json={
             "body": {
-                "access_tokens": { owner['access_token'], user[0]['access_token']} 
+                "access_tokens": [ owner['access_token'], user[0]['access_token']]
             }
         },
         headers={
