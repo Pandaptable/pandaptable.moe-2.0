@@ -392,7 +392,8 @@ async def discord_contact_interactions(req: Request):
     )
         channel = r.json()
         logging.info(channel)
-        return jsonify({
+        return Response(
+        body=json.dumps({
             "type": 7,
             "data": {
                 "embeds": message['message']['embeds'],
@@ -422,7 +423,11 @@ async def discord_contact_interactions(req: Request):
                     }
                 ],
             },
-    })
+        }
+        ),
+        headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
+        status_code=200,
+    )
 
 
 app.start(url="0.0.0.0", port=app.env["PORT"])
