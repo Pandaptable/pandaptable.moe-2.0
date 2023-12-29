@@ -34,7 +34,7 @@ async def log_request(req: Request):
 
 @app.after_request()
 async def log_response(res: Response):
-    logger.info("Sending response: {} {}", res.status_code)
+    logger.info("Sending response: {}", res.status_code)
     return res
 
 
