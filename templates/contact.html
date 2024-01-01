@@ -12,7 +12,7 @@
         width: 100%;
         background-color: black;
     }
-    h1, h2, h3 {
+    h1, h2, h3, .bottom {
         color: white;
     }
     .middle {
@@ -45,25 +45,27 @@
         margin-top: -1em;
         background-color: black;
       }
-      .copyright {
+      .bottom {
         display: flex;
         padding-left: 0.5em;
         margin-right: auto;
         align-items: center;
       }
-
-      .copyright>p {
-        font-family: 'IBM Plex Mono', monospace;
-        font-size: 15px;
+      .bottom {
+        position: absolute;
+        bottom: 0;
+        left: 0
+        padding-left: 0.5em
+        align-items: center
+      }
+      .bottom>a {
         color: white;
+        text-decoration: none;
       }
 
-      .copyright>p>a {
+      .bottom>a:visited {
         color: white;
-      }
-
-      .copyright>p>a:visited {
-        color: white;
+        text-decoration: none;
       }
   </style>
     <meta id="title" content="Contact" property="og:title" />
@@ -82,9 +84,7 @@
     <a class="button-link" href="{{redirect}}">Accept</a>
     <img src="https://files.catbox.moe/co51ek.png" width=325.5 height=310>
   </div>
-  <div class="footer">
-		<div class="copyright">
-			<p>
-				<span class="source"><a target="_blank" href="{{source}}">Source Code</a></span>
-			</p>
+  <div class="bottom">
+    <a target="_blank" href="{{source}}">Source Code</a>
+    </div>
 </body>
