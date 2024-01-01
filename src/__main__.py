@@ -194,9 +194,11 @@ async def embed_guild(req: Request):
 @app.get("/contact")
 def discord_contact(req: Request):
         context = {
-        "title": "By clicking on the button, you'll be redirected to a discord login.",
-        "message": "This will give me the ability to add you to a group DM and see your connections.\nYou can stop me from doing so by removing the connection in settings -> Authorized Apps -> Lain",
-        "redirect": f"{app.env['OAUTH2_URL']}"
+        "title": "By clicking accept, you'll be redirected to a discord login.",
+        "message": "This will give me the ability to add you to a group DM and see your connections.",
+        "message2": "You can stop me from doing so by removing the connection in settings -> Authorized Apps -> Lain",
+        "redirect": f"{app.env['OAUTH2_URL']}",
+        "source": "https://github.com/Pandaptable/pandaptable.moe-2.0/blob/master/src/__main__.py"
     }
         return app.jinja_template.render_template(template_name="contact.html", **context)
 

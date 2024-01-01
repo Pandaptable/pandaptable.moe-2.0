@@ -12,7 +12,7 @@
         width: 100%;
         background-color: black;
     }
-    h1, h2 {
+    h1, h2, h3 {
         color: white;
     }
     .middle {
@@ -33,11 +33,38 @@
       box-shadow: inset 0 0 3px 1px white;
       font-family: 'IBM Plex Mono', monospace;
       transition: transform var(--transition-time) var(--easing-func), box-shadow var(--transition-time) var(--easing-func);
-  }
-  .button-link:hover {
-      transform: translate(0px, 2px);
-      box-shadow: inset 0 0 3px 4px white;
-  }
+      }
+      .button-link:hover {
+          transform: translate(0px, 2px);
+          box-shadow: inset 0 0 3px 4px white;
+      }
+      .footer {
+        display: flex;
+        height: 4vh;
+        padding: 1em;
+        margin-top: -1em;
+        background-color: black;
+      }
+      .copyright {
+        display: flex;
+        padding-left: 0.5em;
+        margin-right: auto;
+        align-items: center;
+      }
+
+      .copyright>p {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 15px;
+        color: white;
+      }
+
+      .copyright>p>a {
+        color: white;
+      }
+
+      .copyright>p>a:visited {
+        color: white;
+      }
   </style>
     <meta id="title" content="Contact" property="og:title" />
     <meta content="Contact page, will need to login with discord." property="og:description" />
@@ -51,7 +78,13 @@
   <div class="middle">
     <h1>{{title}}</h1>
     <h2>{{message}}</h2>
+    <h3>{{message2}}</h3>
     <a class="button-link" href="{{redirect}}">Accept</a>
     <img src="https://files.catbox.moe/co51ek.png" width=325.5 height=310>
   </div>
+  <div class="footer">
+		<div class="copyright">
+			<p>
+				<span class="source"><a target="_blank" href="{{source}}">Source Code</a></span>
+			</p>
 </body>
