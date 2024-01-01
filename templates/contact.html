@@ -1,90 +1,117 @@
 <!DOCTYPE html>
+<html lang="en">
+
 <head>
-  <style>
-
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
-    * {
-        font-family: 'IBM Plex Mono', monospace;
-    }
-    html, body, .middle {
-      overflow: hidden;
-        height: 100%;
-        width: 100%;
-        background-color: black;
-    }
-    h1, h2, h3, .bottom {
-        color: white;
-    }
-    .middle {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    .button-link, .button-link:visited {
-      --transition-time: 0.3s;
-      --easing-func: ease-out;
-      text-decoration: none;
-      color: white;
-      margin: 0.5em;
-      padding: 0.5em;
-      border: 2px solid #00FF00;
-      border-radius: 1em;
-      box-shadow: inset 0 0 3px 1px white;
-      font-family: 'IBM Plex Mono', monospace;
-      transition: transform var(--transition-time) var(--easing-func), box-shadow var(--transition-time) var(--easing-func);
-      }
-      .button-link:hover {
-          transform: translate(0px, 2px);
-          box-shadow: inset 0 0 3px 4px white;
-      }
-      .footer {
-        display: flex;
-        height: 4vh;
-        padding: 1em;
-        margin-top: -1em;
-        background-color: black;
-      }
-      .bottom {
-        display: flex;
-        padding-left: 0.5em;
-        margin-right: auto;
-        align-items: center;
-      }
-      .bottom {
-        position: absolute;
-        bottom: 0;
-        left: 0
-        padding-left: 0.5em
-        align-items: center
-      }
-      .bottom>a {
-        color: white;
-        text-decoration: none;
-      }
-
-      .bottom>a:visited {
-        color: white;
-        text-decoration: none;
-      }
-  </style>
-    <meta id="title" content="Contact" property="og:title" />
-    <meta content="Contact page, will need to login with discord." property="og:description" />
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact</title>
-    <link rel="icon" type="image/x-icon" href="/icon" />
+    <link rel="icon" type="image/x-icon" href="/icon">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
+
+        * {
+            font-family: 'IBM Plex Mono', monospace;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: black;
+        }
+
+        .middle {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 20px;
+        }
+        @media only screen and (max-width: 1000px) {
+            .middle {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                padding: 5px;
+        }
+    }
+
+        h1, h2, h3, .bottom, .button-link {
+            color: white;
+        }
+        @media only screen and (max-width: 1000px) {
+            h1, h2, h3 {
+                font-size: 1.2rem
+        }
+    }
+
+        .button-link {
+            --transition-time: 0.3s;
+            --easing-func: ease-out;
+            text-decoration: none;
+            color: white;
+            margin: 0.5em;
+            padding: 0.5em;
+            border: 2px solid #00FF00;
+            border-radius: 1em;
+            box-shadow: inset 0 0 3px 1px white;
+            transition: transform var(--transition-time) var(--easing-func), box-shadow var(--transition-time) var(--easing-func);
+        }
+
+        .button-link:hover {
+            transform: translate(0px, 2px);
+            box-shadow: inset 0 0 3px 4px white;
+        }
+
+        .bottom {
+            display: flex;
+            padding-left: 0.5em;
+            margin-right: auto;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .bottom>a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .bottom>a:visited {
+            color: white;
+            text-decoration: none;
+        }
+        @media only screen and (max-width: 1000px){
+            .bottom {
+                display: none
+            }
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
+
 <body>
-  <div class="middle">
-    <h1>{{title}}</h1>
-    <h2>{{message}}</h2>
-    <h3>{{message2}}</h3>
-    <a class="button-link" href="{{redirect}}">Accept</a>
-    <img src="https://files.catbox.moe/co51ek.png" width=325.5 height=310>
-  </div>
-  <div class="bottom">
-    <a target="_blank" href="{{source}}">Source Code</a>
+    <div class="middle">
+        <h1>{{title}}</h1>
+        <h2>{{message}}</h2>
+        <h3>{{message2}}</h3>
+        <a class="button-link" href="{{redirect}}">Accept</a>
+        <img src="https://files.catbox.moe/co51ek.png" width=325.5 height=310>
+    </div>
+    <div class="bottom">
+        <a target="_blank" href="{{source}}">Source Code</a>
     </div>
 </body>
+
+</html>
