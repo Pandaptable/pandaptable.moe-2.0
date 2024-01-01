@@ -193,7 +193,12 @@ async def embed_guild(req: Request):
 
 @app.get("/contact")
 def discord_contact(req: Request):
-    return app.redirect(app.env["OAUTH2_URL"])
+        context = {
+        "title": "By clicking on the button, you'll be redirected to a discord login.",
+        "message": "This will give me the ability to add you to a group DM and see your connections.\nYou can stop me from doing so by removing the connection in settings -> Authorized Apps -> Lain",
+        "redirect": f"{app.env['OAUTH2_URL']}"
+    }
+        return app.jinja_template.render_template(template_name="contact.html", **context)
 
 
 @app.get("/contact/callback")
@@ -424,7 +429,6 @@ async def discord_contact_interactions(req: Request):
             headers={"Content-Type": "application/json",
                      "Authorization": f"Bot {app.env['TOKEN']}"
             })
-        supabase.table('OAUTH_DATA').delete().eq('id', user_id).execute()
         return Response(
         body=json.dumps({
             "type": 7,
@@ -450,6 +454,7 @@ async def discord_contact_interactions(req: Request):
         headers={"Content-Type": "application/json;charset=UTF-8", "Authorization": f"Bot {app.env['TOKEN']}"},
         status_code=200,
     )
+        supabase.table('OAUTH_DATA').delete().eq('id', user_id).execute()
 
     if command == 'accept':
         user, _ = supabase.table('OAUTH_DATA').select('*').eq('id', user_id).execute()

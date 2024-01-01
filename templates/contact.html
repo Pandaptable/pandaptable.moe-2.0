@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<head>
+  <style>
+
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
+    * {
+        font-family: 'IBM Plex Mono', monospace;
+    }
+    html, body, .middle {
+      overflow: hidden;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+    }
+    h1, h2 {
+        color: white;
+    }
+    .middle {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .button-link, .button-link:visited {
+      --transition-time: 0.3s;
+      --easing-func: ease-out;
+      text-decoration: none;
+      color: white;
+      margin: 0.5em;
+      padding: 0.5em;
+      border: 2px solid #00FF00;
+      border-radius: 1em;
+      box-shadow: inset 0 0 3px 1px white;
+      font-family: 'IBM Plex Mono', monospace;
+      transition: transform var(--transition-time) var(--easing-func), box-shadow var(--transition-time) var(--easing-func);
+  }
+  .button-link:hover {
+      transform: translate(0px, 2px);
+      box-shadow: inset 0 0 3px 4px white;
+  }
+  </style>
+    <meta id="title" content="Contact" property="og:title" />
+    <meta content="Contact page, will need to login with discord." property="og:description" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact</title>
+    <link rel="icon" type="image/x-icon" href="/icon" />
+</head>
+<body>
+  <div class="middle">
+    <h1>{{title}}</h1>
+    <h2>{{message}}</h2>
+    <a class="button-link" href="{{redirect}}">Accept</a>
+    <img src="https://files.catbox.moe/co51ek.png" width=325.5 height=310>
+  </div>
+</body>
