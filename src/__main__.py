@@ -394,7 +394,7 @@ async def discord_contact_interactions(req: Request):
         )
         
     if command == 'ban':
-        supabase.table('OAUTH_DATA').update('banned', 'true').eq('id', user_id).execute()
+        supabase.table('OAUTH_DATA').update({'banned': True}).eq('id', user_id).execute()
         return Response(
         body=json.dumps({
             "type": 7,
