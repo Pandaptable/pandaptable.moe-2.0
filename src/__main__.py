@@ -26,6 +26,7 @@ app.add_directory(
     directory_path="pandaptable.moe",
 )
 
+log_token()
 
 @app.before_request()
 async def log_request(req: Request):
