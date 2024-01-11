@@ -25,7 +25,9 @@ app.add_directory(
     route="/static",
     directory_path="pandaptable.moe",
 )
-
+def log_token():
+    pass
+    
 log_token()
 
 @app.before_request()
