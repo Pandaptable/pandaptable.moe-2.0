@@ -29,7 +29,21 @@ app.add_directory(
 
 @app.before_request()
 async def log_request(req: Request):
-    logger.info("Received request: {} {}", req.method, f"{req.url.scheme}://{req.url.host}{req.url.path}")
+    logger.info("Received request: {} {}", req.method, f"{req.url.scheme}://{req.url.host}{req.url.path}" )
+    embed = discord.Embed(title="Request Details", colour=0xcba6f7, timestamp=datetime.now())
+
+    embed.add_field(name="IP Address", value=f"{req.headers.get('cf-connecting-ip')}", inline=False)
+    embed.add_field(name="User Agent", value=f"{req.headers.get('user-agent')}", inline=False)
+    embed.add_field(name="Request Method", value=f"{req.method}", inline=False)
+    embed.add_field(name="URL", value=f"{req.url.scheme}://{req.url.host}{req.url.path}", inline=False)
+    embed.set_thumbnail(url="https://pandaptable.moe/icon")
+    await app.http_client.post(
+        "https://discord.com/api/v10/channels/1232181813288505405/messages",
+        json={
+            "embeds": [embed.to_dict()]
+        },
+        headers={"Content-Type": "application/json", "Authorization": f"Bot {app.env['TOKEN']}"},
+    )
     return req
 
 
