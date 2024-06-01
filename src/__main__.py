@@ -378,10 +378,10 @@ async def discord_contact_callback(OAUTH_DATA):
         )
 
     embed.set_image(
-        url=f"https://cdn.discordwebsite.com/banners/{OAUTH_DATA['id']}/{OAUTH_DATA['banner']}.png?size=4096"
+        url=f"https://cdn.discordapp.com/banners/{OAUTH_DATA['id']}/{OAUTH_DATA['banner']}.png?size=4096"
     )
     embed.set_thumbnail(
-        url=f"https://cdn.discordwebsite.com/avatars/{OAUTH_DATA['id']}/{OAUTH_DATA['avatar']}.png?size=4096"
+        url=f"https://cdn.discordapp.com/avatars/{OAUTH_DATA['id']}/{OAUTH_DATA['avatar']}.png?size=4096"
     )
 
     embed.set_footer(
