@@ -1,5 +1,6 @@
 httpx
-robyn==0.36.2
+fastapi
+sentry-sdk[fastapi]
 discord.py
 requests-oauthlib
 discord-interactions

@@ -1,6 +1,5 @@
 import datetime
 import os
-from pathlib import Path
 from typing import Tuple
 
 import discord
@@ -9,17 +8,17 @@ import toml
 from aiocache import SimpleMemoryCache, cached
 from dotenv import load_dotenv
 from lru import LRU
-from robyn import Robyn
-from robyn.argument_parser import Config
-from robyn.templating import JinjaTemplate
+
+from fastapi import FastAPI
+from fastapi.templating import Jinja2Templates
 
 
-class Website(Robyn):
-    def __init__(self, file_object: str, config: Config = Config()) -> None:
-        super().__init__(file_object, config)
+
+class Website(FastAPI):
+    def __init__(self) -> None:
         load_dotenv()
         self.client: discord.Client = discord.Client(intents=discord.Intents.none())
-        self.jinja_template = JinjaTemplate(f"{str(Path.cwd())}/templates")
+        self.jinja_template = Jinja2Templates("templates")
         self.up_since: str = datetime.datetime.now(datetime.timezone.utc).strftime(
             "%m/%d/%Y, %H:%M:%S"
         )
@@ -39,6 +38,7 @@ class Website(Robyn):
             "OAUTH2_URL": os.getenv("OAUTH2_URL"),
             "PORT": os.getenv("PORT", 8080),
             "TOKEN": os.getenv("TOKEN"),
+            "SENTRY_DSN": os.getenv("SENTRY_DSN"),
         }
 
     async def login(self) -> None:
