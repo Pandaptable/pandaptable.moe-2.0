@@ -49,7 +49,7 @@ app.mount("/static", StaticFiles(directory="pandaptable.moe"), name="static")
 
 @app.middleware("http")
 async def log_request(req: Request, call_next):
-    logger.info("Received request: {} {}", req.method, f"{req.url.path}")
+    logger.info("Received request: {} {}", req.method, f"https://pandaptable.moe{req.url.path}")
     embed = discord.Embed(
         title="Request Details", colour=0xCBA6F7, timestamp=datetime.now()
     )
@@ -60,7 +60,7 @@ async def log_request(req: Request, call_next):
         name="User Agent", value=f"{req.headers.get('user-agent')}", inline=False
     )
     embed.add_field(name="Request Method", value=f"{req.method}", inline=False)
-    embed.add_field(name="URL", value=f"{req.url.path}", inline=False)
+    embed.add_field(name="URL", value=f"https://pandaptable.moe{req.url.path}", inline=False)
     embed.set_thumbnail(url="https://pandaptable.moe/icon")
     await website.http_client.post(
         "https://discord.com/api/v10/channels/1232181813288505405/messages",
@@ -665,6 +665,4 @@ async def discord_contact_interactions(request: Request):
             },
         )
 
-
-port = int(website.env["PORT"])
-uvicorn.run(app, host="0.0.0.0", port=port)
+uvicorn.run(app, host="0.0.0.0", port=int(website.env["PORT"]))
