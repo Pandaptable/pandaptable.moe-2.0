@@ -297,7 +297,7 @@ async def discord_contact_callback_data(token):
     if banned_status[0]["banned"] is False:
         return await discord_contact_callback(OAUTH_DATA)
     else:
-        return website.redirect("/contact/banned")
+        return RedirectResponse(url='/contact/banned')
 
 
 def num_to_roman(n: int) -> str:
@@ -423,7 +423,7 @@ async def discord_contact_callback(OAUTH_DATA):
             "Authorization": f"Bot {website.env['TOKEN']}",
         },
     )
-    return website.redirect("/contact/success")
+    return RedirectResponse(url='/contact/success')
 
 
 @app.get("/contact/success")
