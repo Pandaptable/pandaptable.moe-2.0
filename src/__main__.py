@@ -453,11 +453,12 @@ async def discord_contact_banned(request: Request):
 async def discord_contact_interactions(request: Request):
     signature = request.headers.get("x-signature-ed25519")
     timestamp = request.headers.get("x-signature-timestamp")
+    body = await request.body()
     if (
         signature is None
         or timestamp is None
         or not verify_key(
-            request.body.encode(), signature, timestamp, website.env["PUBLIC_KEY"]
+            body.encode(), signature, timestamp, website.env["PUBLIC_KEY"]
         )
     ):
         return "Bad request signature", 401
