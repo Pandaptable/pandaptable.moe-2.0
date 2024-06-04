@@ -458,7 +458,7 @@ async def discord_contact_interactions(request: Request):
         signature is None
         or timestamp is None
         or not verify_key(
-            body.encode(), signature, timestamp, website.env["PUBLIC_KEY"]
+            body, signature, timestamp, website.env["PUBLIC_KEY"]
         )
     ):
         return "Bad request signature", 401
