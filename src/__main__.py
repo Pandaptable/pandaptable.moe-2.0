@@ -464,12 +464,12 @@ async def discord_contact_interactions(request: Request):
         return "Bad request signature", 401
 
     if (
-        json.loads(request.body)
-        and json.loads(request.body).get("type") == InteractionType.PING
+        json.loads(body)
+        and json.loads(body).get("type") == InteractionType.PING
     ):
         return jsonable_encoder({"type": InteractionResponseType.PONG})
 
-    message = json.loads(request.body)
+    message = json.loads(body)
     command = message["data"]["custom_id"].split("-")[0]
     user_id = message["data"]["custom_id"].split("-")[1]
     if len(message["data"]["custom_id"].split("-")) == 3:
