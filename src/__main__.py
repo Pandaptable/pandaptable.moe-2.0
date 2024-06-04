@@ -290,6 +290,7 @@ async def discord_contact_callback_data(token):
         "token_scopes": token["scope"],
         "refresh_token": token["refresh_token"],
     }
+    supabase.table('OAUTH_DATA').upsert(OAUTH_DATA).execute()
     banned_status, _ = supabase.table("OAUTH_DATA").select("*").eq("id", OAUTH_DATA["id"]).execute()
     _, banned_status = banned_status
     if not banned_status[0]["banned"]:
