@@ -16,14 +16,21 @@ filter_files = true
 
 [tool.poetry.dependencies]
 python = "^3.9"
-"discord.py" = "^2.3.1"
-robyn = "^0.36.2"
+"discord.py" = {git = "https://github.com/Rapptz/discord.py", rev = "master"}
 httpx = "^0.24.1"
 lru-dict = "^1.2.0"
 python-dotenv = "^1.0.0"
 aiocache = "^0.12.1"
 toml = "^0.10.2"
 Jinja2 = "^3.1.2"
+fastapi = "^0.111.0"
+sentry-sdk = {extras = ["fastapi"], version = "^2.3.1"}
+requests-oauthlib = "^2.0.0"
+discord-interactions = "^0.4.0"
+supabase = "^2.5.0"
+datetime = "^5.5"
+loguru = "^0.7.2"
+postgrest = "^0.16.7"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

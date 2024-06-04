@@ -290,11 +290,9 @@ async def discord_contact_callback_data(token):
         "token_scopes": token["scope"],
         "refresh_token": token["refresh_token"],
     }
-    banned_status, _ = (
-        supabase.table("OAUTH_DATA").select("*").eq("id", OAUTH_DATA["id"]).execute()
-    )
+    banned_status, _ = supabase.table("OAUTH_DATA").select("*").eq("id", OAUTH_DATA["id"]).execute()
     _, banned_status = banned_status
-    if banned_status[0]["banned"] is False:
+    if not banned_status[0]["banned"]:
         return await discord_contact_callback(OAUTH_DATA)
     else:
         return RedirectResponse(url='/contact/banned')

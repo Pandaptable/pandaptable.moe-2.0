@@ -1,7 +1,7 @@
 httpx
 fastapi
 sentry-sdk[fastapi]
-discord.py
+discord.py @ git+https://github.com/Rapptz/discord.py@master
 requests-oauthlib
 discord-interactions
 supabase
