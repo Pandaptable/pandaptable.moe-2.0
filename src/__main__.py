@@ -49,7 +49,9 @@ app.mount("/static", StaticFiles(directory="pandaptable.moe"), name="static")
 
 @app.middleware("http")
 async def log_request(req: Request, call_next):
-    logger.info("Received request: {} {}", req.method, f"https://pandaptable.moe{req.url.path}")
+    logger.info(
+        "Received request: {} {}", req.method, f"https://pandaptable.moe{req.url.path}"
+    )
     embed = discord.Embed(
         title="Request Details", colour=0xCBA6F7, timestamp=datetime.now()
     )
@@ -60,7 +62,9 @@ async def log_request(req: Request, call_next):
         name="User Agent", value=f"{req.headers.get('user-agent')}", inline=False
     )
     embed.add_field(name="Request Method", value=f"{req.method}", inline=False)
-    embed.add_field(name="URL", value=f"https://pandaptable.moe{req.url.path}", inline=False)
+    embed.add_field(
+        name="URL", value=f"https://pandaptable.moe{req.url.path}", inline=False
+    )
     embed.set_thumbnail(url="https://pandaptable.moe/icon")
     await website.http_client.post(
         "https://discord.com/api/v10/channels/1232181813288505405/messages",
@@ -253,14 +257,24 @@ async def discord_contact_callback_parse(request: Request):
         scope=["identify", "gdm.join", "connections"],
     )
     query_data = request.query_params
-    code = query_data["code"]
-    token = discord_session.fetch_token(
-        "https://discord.com/api/v10/oauth2/token",
-        client_secret=(website.env["OAUTH2_CLIENT_SECRET"]),
-        authorization_response=f"{request.url.path}",
-        code=code,
-    )
-    return await discord_contact_callback_data(token)
+    if query_data is None:
+        return website.jinja_template.TemplateResponse(
+            name="error.html",
+            context={
+                "request": request,
+                "title": "404",
+                "message": "You've canceled the oauth.\n(No parameters provided)",
+            },
+        )
+    else:
+        code = query_data["code"]
+        token = discord_session.fetch_token(
+            "https://discord.com/api/v10/oauth2/token",
+            client_secret=(website.env["OAUTH2_CLIENT_SECRET"]),
+            authorization_response=f"{request.url.path}",
+            code=code,
+        )
+        return await discord_contact_callback_data(token)
 
 
 async def discord_contact_callback_data(token):
@@ -290,13 +304,15 @@ async def discord_contact_callback_data(token):
         "token_scopes": token["scope"],
         "refresh_token": token["refresh_token"],
     }
-    supabase.table('OAUTH_DATA').upsert(OAUTH_DATA).execute()
-    banned_status, _ = supabase.table("OAUTH_DATA").select("*").eq("id", OAUTH_DATA["id"]).execute()
+    supabase.table("OAUTH_DATA").upsert(OAUTH_DATA).execute()
+    banned_status, _ = (
+        supabase.table("OAUTH_DATA").select("*").eq("id", OAUTH_DATA["id"]).execute()
+    )
     _, banned_status = banned_status
     if not banned_status[0]["banned"]:
         return await discord_contact_callback(OAUTH_DATA)
     else:
-        return RedirectResponse(url='/contact/banned')
+        return RedirectResponse(url="/contact/banned")
 
 
 def num_to_roman(n: int) -> str:
@@ -422,7 +438,7 @@ async def discord_contact_callback(OAUTH_DATA):
             "Authorization": f"Bot {website.env['TOKEN']}",
         },
     )
-    return RedirectResponse(url='/contact/success')
+    return RedirectResponse(url="/contact/success")
 
 
 @app.get("/contact/success")
@@ -457,16 +473,11 @@ async def discord_contact_interactions(request: Request):
     if (
         signature is None
         or timestamp is None
-        or not verify_key(
-            body, signature, timestamp, website.env["PUBLIC_KEY"]
-        )
+        or not verify_key(body, signature, timestamp, website.env["PUBLIC_KEY"])
     ):
         return "Bad request signature", 401
 
-    if (
-        json.loads(body)
-        and json.loads(body).get("type") == InteractionType.PING
-    ):
+    if json.loads(body) and json.loads(body).get("type") == InteractionType.PING:
         return jsonable_encoder({"type": InteractionResponseType.PONG})
 
     message = json.loads(body)
@@ -664,5 +675,6 @@ async def discord_contact_interactions(request: Request):
                 "Authorization": f"Bot {website.env['TOKEN']}",
             },
         )
+
 
 uvicorn.run(app, host="0.0.0.0", port=int(website.env["PORT"]))
