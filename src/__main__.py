@@ -1,11 +1,11 @@
 import json
 import re
 import discord
-import uvicorn
 import sentry_sdk
+import logging
+import sys
 
 from requests_oauthlib import OAuth2Session
-from pathlib import Path
 from loguru import logger
 from datetime import datetime
 from supabase import create_client, Client
@@ -14,10 +14,9 @@ from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from fastapi.encoders import jsonable_encoder
-from fastapi.templating import Jinja2Templates
+from uvicorn import Config, Server
 
 from utils import Website
-
 
 async def lifespan(_):
     await website.login()
@@ -39,10 +38,11 @@ sentry_sdk.init(
 
 app = FastAPI(lifespan=lifespan)
 
-templates = Jinja2Templates(directory=f"{str(Path.cwd())}/templates")
 supabase: Client = create_client(
     website.env["DATABASE_URL"], website.env["DATABASE_KEY"]
 )
+LOG_LEVEL = logging.getLevelName(website.env["LOG_LEVEL"])
+JSON_LOGS = True if (website.env["JSON_LOGS"]) == "1" else False
 
 app.mount("/static", StaticFiles(directory="pandaptable.moe"), name="static")
 
@@ -257,7 +257,7 @@ async def discord_contact_callback_parse(request: Request):
         scope=["identify", "gdm.join", "connections"],
     )
     query_data = request.query_params
-    if query_data is None:
+    if 'code' not in query_data:
         return website.jinja_template.TemplateResponse(
             name="error.html",
             context={
@@ -677,4 +677,50 @@ async def discord_contact_interactions(request: Request):
         )
 
 
-uvicorn.run(app, host="0.0.0.0", port=int(website.env["PORT"]))
+class InterceptHandler(logging.Handler):
+    def emit(self, record):
+        # get corresponding Loguru level if it exists
+        try:
+            level = logger.level(record.levelname).name
+        except ValueError:
+            level = record.levelno
+
+        # find caller from where originated the logged message
+        frame, depth = sys._getframe(6), 6
+        while frame and frame.f_code.co_filename == logging.__file__:
+            frame = frame.f_back
+            depth += 1
+
+        logger.opt(depth=depth, exception=record.exc_info).log(
+            level, record.getMessage()
+        )
+
+
+def setup_logging():
+    # intercept everything at the root logger
+    logging.root.handlers = [InterceptHandler()]
+    logging.root.setLevel(LOG_LEVEL)
+
+    # remove every other logger's handlers
+    # and propagate to root logger
+    for name in logging.root.manager.loggerDict.keys():
+        logging.getLogger(name).handlers = []
+        logging.getLogger(name).propagate = True
+
+    # configure loguru
+    logger.configure(handlers=[{"sink": sys.stdout, "serialize": JSON_LOGS}])
+
+
+if __name__ == "__main__":
+    server = Server(
+        Config(
+            app,
+            host="0.0.0.0",
+            log_level=LOG_LEVEL,
+            port=int(website.env["PORT"])
+        ),
+    )
+
+    setup_logging()
+# thanks to https://pawamoy.github.io/posts/unify-logging-for-a-gunicorn-uvicorn-app/ for the uvicorn loguru logging
+    server.run()

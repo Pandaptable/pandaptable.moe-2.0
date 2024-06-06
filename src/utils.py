@@ -36,9 +36,11 @@ class Website(FastAPI):
             "OAUTH2_REDIRECT_URI": os.getenv("OAUTH2_REDIRECT_URI"),
             "OAUTH2_CLIENT_SECRET": os.getenv("OAUTH2_CLIENT_SECRET"),
             "OAUTH2_URL": os.getenv("OAUTH2_URL"),
-            "PORT": os.getenv("PORT", 8080),
+            "PORT": os.getenv("PORT", 49999),
             "TOKEN": os.getenv("TOKEN"),
             "SENTRY_DSN": os.getenv("SENTRY_DSN"),
+            "LOG_LEVEL": os.getenv("LOG_LEVEL", "INFO"),
+            "JSON_LOGS": os.getenv("JSON_LOGS", "0"),
         }
 
     async def login(self) -> None:
