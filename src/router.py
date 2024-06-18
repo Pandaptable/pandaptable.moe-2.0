@@ -1,7 +1,9 @@
 import json
 import re
+import traceback
+from aiohttp import ClientSession
 import discord
-import sentry_sdk
+
 import logging
 import sys
 
@@ -12,11 +14,11 @@ from supabase import create_client, Client
 from discord_interactions import verify_key, InteractionType, InteractionResponseType
 from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.encoders import jsonable_encoder
-from uvicorn import Config, Server
 
 from utils import Website
+
 
 async def lifespan(_):
     await website.login()
@@ -29,12 +31,6 @@ async def lifespan(_):
 
 
 website = Website()
-
-sentry_sdk.init(
-    dsn=website.env["SENTRY_DSN"],
-    traces_sample_rate=1.0,
-    profiles_sample_rate=0.5,
-)
 
 app = FastAPI(lifespan=lifespan)
 
@@ -76,6 +72,27 @@ async def log_request(req: Request, call_next):
     )
     response = await call_next(req)
     return response
+
+
+@app.exception_handler(Exception)
+async def error_handling(request: Request, exc: Exception) -> JSONResponse:
+    t = "`"
+    error = sys.exc_info()[1] or Exception("Couldn't fetch exception information")
+    error_message = traceback.format_exception(type(error), error, error.__traceback__)
+    async with ClientSession() as session:
+        async with session.post(
+            "https://discord.com/api/v10/channels/1250265593374838806/messages",
+            json={"content": f"{t*3}py\n{''.join(error_message)[:1900]}{t*3}"},
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bot {website.env['TOKEN']}",
+            },
+        ) as resp:
+            resp.raise_for_status()
+    return JSONResponse(
+        status_code=503,
+        content={"message": "Internal server error."},
+    )
 
 
 @app.get("/")
@@ -257,7 +274,7 @@ async def discord_contact_callback_parse(request: Request):
         scope=["identify", "gdm.join", "connections"],
     )
     query_data = request.query_params
-    if 'code' not in query_data:
+    if "code" not in query_data:
         return website.jinja_template.TemplateResponse(
             name="error.html",
             context={
@@ -710,17 +727,4 @@ def setup_logging():
     # configure loguru
     logger.configure(handlers=[{"sink": sys.stdout, "serialize": JSON_LOGS}])
 
-
-if __name__ == "__main__":
-    server = Server(
-        Config(
-            app,
-            host="0.0.0.0",
-            log_level=LOG_LEVEL,
-            port=int(website.env["PORT"])
-        ),
-    )
-
     setup_logging()
-# thanks to https://pawamoy.github.io/posts/unify-logging-for-a-gunicorn-uvicorn-app/ for the uvicorn loguru logging
-    server.run()
