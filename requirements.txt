@@ -13,3 +13,4 @@ toml
 datetime
 loguru
 postgrest
+itsdangerous

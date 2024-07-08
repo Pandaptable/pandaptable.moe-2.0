@@ -32,6 +32,13 @@ async def lifespan(_):
 
 website = Website()
 
+DISCORD_API_BASE = website.envs["DISCORD_API_PROXY_URI"] or "https://discord.com"
+
+if website.envs["DISCORD_API_PROXY_URI"]:
+    from discord.http import Route
+    Route.BASE = f"{website.envs['DISCORD_API_PROXY_URI']}/api/v10"
+
+
 app = FastAPI(lifespan=lifespan)
 
 supabase: Client = create_client(
@@ -63,7 +70,7 @@ async def log_request(req: Request, call_next):
     )
     embed.set_thumbnail(url="https://pandaptable.moe/icon")
     await website.http_client.post(
-        "https://discord.com/api/v10/channels/1232181813288505405/messages",
+        f"{DISCORD_API_BASE}/api/v10/channels/1232181813288505405/messages",
         json={"embeds": [embed.to_dict()]},
         headers={
             "Content-Type": "application/json",
@@ -81,7 +88,7 @@ async def error_handling(request: Request, exc: Exception) -> JSONResponse:
     error_message = traceback.format_exception(type(error), error, error.__traceback__)
     async with ClientSession() as session:
         async with session.post(
-            "https://discord.com/api/v10/channels/1250265593374838806/messages",
+            f"{DISCORD_API_BASE}/api/v10/channels/1250265593374838806/messages",
             json={"content": f"{t*3}py\n{''.join(error_message)[:1900]}{t*3}"},
             headers={
                 "Content-Type": "application/json",
@@ -286,7 +293,7 @@ async def discord_contact_callback_parse(request: Request):
     else:
         code = query_data["code"]
         token = discord_session.fetch_token(
-            "https://discord.com/api/v10/oauth2/token",
+            f"{DISCORD_API_BASE}/api/v10/oauth2/token",
             client_secret=(website.env["OAUTH2_CLIENT_SECRET"]),
             authorization_response=f"{request.url.path}",
             code=code,
@@ -296,9 +303,9 @@ async def discord_contact_callback_parse(request: Request):
 
 async def discord_contact_callback_data(token):
     discord = OAuth2Session(website.env["OAUTH2_CLIENT_ID"], token=token)
-    user = discord.get("https://discord.com/api/v10/users/@me").json()
+    user = discord.get(f"{DISCORD_API_BASE}/api/v10/users/@me").json()
     connections = discord.get(
-        "https://discord.com/api/v10/users/@me/connections"
+        f"{DISCORD_API_BASE}/api/v10/users/@me/connections"
     ).json()
     OAUTH_DATA = {
         "id": user["id"],
@@ -421,7 +428,7 @@ async def discord_contact_callback(OAUTH_DATA):
         icon_url="https://dp.nea.moe/avatar/97153209843335168.png",
     )
     await website.http_client.post(
-        "https://discord.com/api/v10/channels/1145120233447768265/messages",
+        f"{DISCORD_API_BASE}/api/v10/channels/1145120233447768265/messages",
         json={
             "embeds": [embed.to_dict()],
             "components": [
@@ -570,14 +577,14 @@ async def discord_contact_interactions(request: Request):
         )
     if command == "close":
         await website.http_client.delete(
-            f"https://discord.com/api/v10/channels/{param}/recipients/{user_id}",
+            f"{DISCORD_API_BASE}/api/v10/channels/{param}/recipients/{user_id}",
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bot {website.env['TOKEN']}",
             },
         )
         await website.http_client.delete(
-            f"https://discord.com/api/v10/channels/{param}/recipients/{website.env['OWNER_ID']}",
+            f"{DISCORD_API_BASE}/api/v10/channels/{param}/recipients/{website.env['OWNER_ID']}",
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bot {website.env['TOKEN']}",
@@ -623,7 +630,7 @@ async def discord_contact_interactions(request: Request):
         )
         _, owner = owner
         r = await website.http_client.post(
-            "https://discord.com/api/v10/oauth2/token",
+            f"{DISCORD_API_BASE}/api/v10/oauth2/token",
             data={
                 "client_id": website.env["OAUTH2_CLIENT_ID"],
                 "client_secret": website.env["OAUTH2_CLIENT_SECRET"],
@@ -645,7 +652,7 @@ async def discord_contact_interactions(request: Request):
         supabase.table("OAUTH_DATA").upsert(refreshed_token).execute()
 
         r = await website.http_client.post(
-            "https://discord.com/api/v10/users/@me/channels",
+            f"{DISCORD_API_BASE}/api/v10/users/@me/channels",
             json={"access_tokens": [owner["access_token"], user[0]["access_token"]]},
             headers={
                 "Content-Type": "application/json",

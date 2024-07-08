@@ -13,7 +13,6 @@ from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 
 
-
 class Website(FastAPI):
     def __init__(self) -> None:
         load_dotenv()
@@ -40,7 +39,13 @@ class Website(FastAPI):
             "TOKEN": os.getenv("TOKEN"),
             "LOG_LEVEL": os.getenv("LOG_LEVEL", "INFO"),
             "JSON_LOGS": os.getenv("JSON_LOGS", "0"),
+            "DISCORD_API_PROXY_URI": os.getenv("DISCORD_API_PROXY_URI", None),
         }
+
+        if self.envs["DISCORD_API_PROXY_URI"]:
+            from discord.http import Route
+            Route.BASE = f"{self.envs['DISCORD_API_PROXY_URI']}/api/v10"
+
 
     async def login(self) -> None:
         """Logs in the client."""
