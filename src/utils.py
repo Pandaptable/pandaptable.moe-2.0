@@ -42,9 +42,9 @@ class Website(FastAPI):
             "DISCORD_API_PROXY_URI": os.getenv("DISCORD_API_PROXY_URI", None),
         }
 
-        if self.envs["DISCORD_API_PROXY_URI"]:
+        if self.env["DISCORD_API_PROXY_URI"]:
             from discord.http import Route
-            Route.BASE = f"{self.envs['DISCORD_API_PROXY_URI']}/api/v10"
+            Route.BASE = f"{self.env['DISCORD_API_PROXY_URI']}/api/v10"
 
 
     async def login(self) -> None:
