@@ -54,7 +54,7 @@ class Website(FastAPI):
     @property
     def version(self) -> str:
         """Returns the version of the website."""
-        with open("pyproject.toml") as f:
+        with open("../pyproject.toml") as f:
             return toml.load(f)["tool"]["poetry"]["version"]
 
     def redirect(self, url: str) -> dict:
