@@ -17,7 +17,7 @@ class Website(FastAPI):
     def __init__(self) -> None:
         load_dotenv()
         self.client: discord.Client = discord.Client(intents=discord.Intents.none())
-        self.jinja_template = Jinja2Templates("templates")
+        self.jinja_template = Jinja2Templates("../templates")
         self.up_since: str = datetime.datetime.now(datetime.timezone.utc).strftime(
             "%m/%d/%Y, %H:%M:%S"
         )
