@@ -32,11 +32,11 @@ async def lifespan(_):
 
 website = Website()
 
-DISCORD_API_BASE = website.envs["DISCORD_API_PROXY_URI"] or "https://discord.com"
+DISCORD_API_BASE = website.env["DISCORD_API_PROXY_URI"] or "https://discord.com"
 
-if website.envs["DISCORD_API_PROXY_URI"]:
+if website.env["DISCORD_API_PROXY_URI"]:
     from discord.http import Route
-    Route.BASE = f"{website.envs['DISCORD_API_PROXY_URI']}/api/v10"
+    Route.BASE = f"{website.env['DISCORD_API_PROXY_URI']}/api/v10"
 
 
 app = FastAPI(lifespan=lifespan)
