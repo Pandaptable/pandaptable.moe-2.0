@@ -47,7 +47,7 @@ supabase: Client = create_client(
 LOG_LEVEL = logging.getLevelName(website.env["LOG_LEVEL"])
 JSON_LOGS = True if (website.env["JSON_LOGS"]) == "1" else False
 
-app.mount("/static", StaticFiles(directory="pandaptable.moe"), name="static")
+app.mount("/static", StaticFiles(directory="../pandaptable.moe"), name="static")
 
 
 @app.middleware("http")
