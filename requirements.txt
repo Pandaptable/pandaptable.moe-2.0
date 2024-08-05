@@ -2,7 +2,6 @@ httpx
 fastapi
 sentry-sdk[fastapi]
 discord.py @ git+https://github.com/Rapptz/discord.py@master
-requests-oauthlib
 discord-interactions
 supabase
 python-dotenv
@@ -14,4 +13,3 @@ datetime
 loguru
 postgrest
 itsdangerous
-gunicorn

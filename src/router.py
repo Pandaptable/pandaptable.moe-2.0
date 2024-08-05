@@ -1,14 +1,13 @@
 import json
 import re
 import traceback
-from aiohttp import ClientSession
 import discord
-
 import logging
 import sys
+import sentry_sdk
 
-from requests_oauthlib import OAuth2Session
 from loguru import logger
+from aiohttp import ClientSession
 from datetime import datetime
 from supabase import create_client, Client
 from discord_interactions import verify_key, InteractionType, InteractionResponseType
@@ -16,6 +15,8 @@ from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.encoders import jsonable_encoder
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.starlette import StarletteIntegration
 
 from utils import Website
 
@@ -38,6 +39,11 @@ if website.env["DISCORD_API_PROXY_URI"]:
     from discord.http import Route
     Route.BASE = f"{website.env['DISCORD_API_PROXY_URI']}/api/v10"
 
+sentry_sdk.init(
+    dsn=website.env["SENTRY_DSN"],
+    integrations=[FastApiIntegration(), StarletteIntegration()],
+    traces_sample_rate=1.0,
+    profiles_sample_rate=0.5)
 
 app = FastAPI(lifespan=lifespan)
 
@@ -275,11 +281,6 @@ async def discord_contact(request: Request):
 
 @app.get("/contact/callback")
 async def discord_contact_callback_parse(request: Request):
-    discord_session = OAuth2Session(
-        website.env["OAUTH2_CLIENT_ID"],
-        redirect_uri=website.env["OAUTH2_REDIRECT_URI"],
-        scope=["identify", "gdm.join", "connections"],
-    )
     query_data = request.query_params
     if "code" not in query_data:
         return website.jinja_template.TemplateResponse(
@@ -292,21 +293,26 @@ async def discord_contact_callback_parse(request: Request):
         )
     else:
         code = query_data["code"]
-        token = discord_session.fetch_token(
-            f"{DISCORD_API_BASE}/api/v10/oauth2/token",
-            client_secret=(website.env["OAUTH2_CLIENT_SECRET"]),
-            authorization_response=f"{request.url.path}",
-            code=code,
-        )
+        data = {
+        "client_id": website.env["OAUTH2_CLIENT_ID"],
+        "client_secret": website.env["OAUTH2_CLIENT_SECRET"],
+        "grant_type": 'authorization_code',
+        "code": code,
+        "redirect_uri": website.env["OAUTH2_REDIRECT_URI"]
+        }
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        token = website.http_client.post(f"{DISCORD_API_BASE}/api/v10/oauth2/token", data=data, headers=headers)
         return await discord_contact_callback_data(token)
 
 
 async def discord_contact_callback_data(token):
-    discord = OAuth2Session(website.env["OAUTH2_CLIENT_ID"], token=token)
-    user = discord.get(f"{DISCORD_API_BASE}/api/v10/users/@me").json()
-    connections = discord.get(
-        f"{DISCORD_API_BASE}/api/v10/users/@me/connections"
-    ).json()
+    headers = {
+        'Authorization': f"{token['token_type']} {token['access_token']}"
+    }
+    user = website.http_client.get(f"{DISCORD_API_BASE}/api/v10/users/@me", headers=headers).json()
+    connections = website.http_client.get(f"{DISCORD_API_BASE}/api/v10/users/@me/connections", headers=headers).json()
     OAUTH_DATA = {
         "id": user["id"],
         "username": user["username"],
