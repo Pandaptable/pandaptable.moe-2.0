@@ -37,6 +37,7 @@ class Website(FastAPI):
             "OAUTH2_URL": os.getenv("OAUTH2_URL"),
             "PORT": os.getenv("PORT", 49999),
             "TOKEN": os.getenv("TOKEN"),
+            "SENTRY_DSN": os.getenv("SENTRY_DSN"),
             "LOG_LEVEL": os.getenv("LOG_LEVEL", "INFO"),
             "JSON_LOGS": os.getenv("JSON_LOGS", "0"),
             "DISCORD_API_PROXY_URI": os.getenv("DISCORD_API_PROXY_URI", None),
