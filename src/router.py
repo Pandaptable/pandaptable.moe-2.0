@@ -87,27 +87,6 @@ async def log_request(req: Request, call_next):
     return response
 
 
-@app.exception_handler(Exception)
-async def error_handling(request: Request, exc: Exception) -> JSONResponse:
-    t = "`"
-    error = sys.exc_info()[1] or Exception("Couldn't fetch exception information")
-    error_message = traceback.format_exception(type(error), error, error.__traceback__)
-    async with ClientSession() as session:
-        async with session.post(
-            f"{DISCORD_API_BASE}/api/v10/channels/1250265593374838806/messages",
-            json={"content": f"{t*3}py\n{''.join(error_message)[:1900]}{t*3}"},
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bot {website.env['TOKEN']}",
-            },
-        ) as resp:
-            resp.raise_for_status()
-    return JSONResponse(
-        status_code=503,
-        content={"message": "Internal server error."},
-    )
-
-
 @app.get("/")
 async def root(request: Request):
     return website.jinja_template.TemplateResponse(
