@@ -56,37 +56,6 @@ JSON_LOGS = True if (website.env["JSON_LOGS"]) == "1" else False
 app.mount("/static", StaticFiles(directory="../pandaptable.moe"), name="static")
 
 
-@app.middleware("http")
-async def log_request(req: Request, call_next):
-    logger.info(
-        "Received request: {} {}", req.method, f"https://pandaptable.moe{req.url.path}"
-    )
-    embed = discord.Embed(
-        title="Request Details", colour=0xCBA6F7, timestamp=datetime.now()
-    )
-    embed.add_field(
-        name="IP Address", value=f"{req.headers.get('cf-connecting-ip')}", inline=False
-    )
-    embed.add_field(
-        name="User Agent", value=f"{req.headers.get('user-agent')}", inline=False
-    )
-    embed.add_field(name="Request Method", value=f"{req.method}", inline=False)
-    embed.add_field(
-        name="URL", value=f"https://pandaptable.moe{req.url.path}", inline=False
-    )
-    embed.set_thumbnail(url="https://pandaptable.moe/icon")
-    await website.http_client.post(
-        f"{DISCORD_API_BASE}/api/v10/channels/1232181813288505405/messages",
-        json={"embeds": [embed.to_dict()]},
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bot {website.env['TOKEN']}",
-        },
-    )
-    response = await call_next(req)
-    return response
-
-
 @app.get("/")
 async def root(request: Request):
     return website.jinja_template.TemplateResponse(
