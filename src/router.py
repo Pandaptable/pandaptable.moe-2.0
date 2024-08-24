@@ -256,6 +256,7 @@ async def discord_contact_callback_parse(request: Request):
 
 
 async def discord_contact_callback_data(token):
+    print(token)
     headers = {
         'Authorization': f"{token['token_type']} {token['access_token']}"
     }
