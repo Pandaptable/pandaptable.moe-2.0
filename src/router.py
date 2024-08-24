@@ -251,17 +251,19 @@ async def discord_contact_callback_parse(request: Request):
         headers = {
             "Content-Type": "application/x-www-form-urlencoded"
         }
-        token = await website.http_client.post(f"{DISCORD_API_BASE}/api/v10/oauth2/token", data=data, headers=headers)
+        response = await website.http_client.post(f"{DISCORD_API_BASE}/api/v10/oauth2/token", data=data, headers=headers)
+        token = await response.json()
         return await discord_contact_callback_data(token)
 
 
 async def discord_contact_callback_data(token):
-    print(token)
     headers = {
         'Authorization': f"{token['token_type']} {token['access_token']}"
     }
-    user = await website.http_client.get(f"{DISCORD_API_BASE}/api/v10/users/@me", headers=headers).json()
-    connections = await website.http_client.get(f"{DISCORD_API_BASE}/api/v10/users/@me/connections", headers=headers).json()
+    user_response = await website.http_client.get(f"{DISCORD_API_BASE}/api/v10/users/@me", headers=headers)
+    user = await user_response.json()
+    connections_response = await website.http_client.get(f"{DISCORD_API_BASE}/api/v10/users/@me/connections", headers=headers)
+    connections = await connections_response.json()
     OAUTH_DATA = {
         "id": user["id"],
         "username": user["username"],
