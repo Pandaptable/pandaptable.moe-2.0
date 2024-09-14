@@ -242,8 +242,6 @@ async def discord_contact_callback_parse(request: Request):
     else:
         code = query_data["code"]
         data = {
-        "client_id": website.env["OAUTH2_CLIENT_ID"],
-        "client_secret": website.env["OAUTH2_CLIENT_SECRET"],
         "grant_type": 'authorization_code',
         "code": code,
         "redirect_uri": website.env["OAUTH2_REDIRECT_URI"]
@@ -251,7 +249,7 @@ async def discord_contact_callback_parse(request: Request):
         headers = {
             "Content-Type": "application/x-www-form-urlencoded"
         }
-        response = await website.http_client.post(f"{DISCORD_API_BASE}/api/v10/oauth2/token", data=data, headers=headers)
+        response = await website.http_client.post(f"{DISCORD_API_BASE}/api/v10/oauth2/token", data=data, headers=headers, auth=(website.env["OAUTH2_CLIENT_ID"], website.env["OAUTH2_CLIENT_SECRET"]))
         token = response.json()
         return await discord_contact_callback_data(token)
 
@@ -471,8 +469,8 @@ async def discord_contact_interactions(request: Request):
 
     if command == "deny":
         supabase.table("OAUTH_DATA").delete().eq("id", user_id).execute()
-        return Response(
-            content=json.dumps(
+        return JSONResponse(
+            content=(
                 {
                     "type": 7,
                     "data": {
@@ -485,7 +483,7 @@ async def discord_contact_interactions(request: Request):
                                         "type": 2,
                                         "label": "Request Denied",
                                         "style": 4,
-                                        "custom-id": "",
+                                        "custom-id": "na",
                                         "disabled": 0,
                                     }
                                 ],
@@ -504,8 +502,8 @@ async def discord_contact_interactions(request: Request):
         supabase.table("OAUTH_DATA").update({"banned": True}).eq(
             "id", user_id
         ).execute()
-        return Response(
-            content=json.dumps(
+        return JSONResponse(
+            content=(
                 {
                     "type": 7,
                     "data": {
@@ -518,7 +516,7 @@ async def discord_contact_interactions(request: Request):
                                         "type": 2,
                                         "label": "User banned",
                                         "style": 4,
-                                        "custom-id": "",
+                                        "custom-id": "na",
                                         "disabled": 0,
                                     }
                                 ],
@@ -547,8 +545,8 @@ async def discord_contact_interactions(request: Request):
                 "Authorization": f"Bot {website.env['TOKEN']}",
             },
         )
-        return Response(
-            content=json.dumps(
+        return JSONResponse(
+            content=(
                 {
                     "type": 7,
                     "data": {
@@ -571,7 +569,6 @@ async def discord_contact_interactions(request: Request):
                 }
             ),
             headers={
-                "Content-Type": "application/json;charset=UTF-8",
                 "Authorization": f"Bot {website.env['TOKEN']}",
             },
         )
@@ -617,8 +614,8 @@ async def discord_contact_interactions(request: Request):
             },
         )
         channel = r.json()
-        return Response(
-            content=json.dumps(
+        return JSONResponse(
+            content=(
                 {
                     "type": 7,
                     "data": {
@@ -652,7 +649,6 @@ async def discord_contact_interactions(request: Request):
                 }
             ),
             headers={
-                "Content-Type": "application/json;charset=UTF-8",
                 "Authorization": f"Bot {website.env['TOKEN']}",
             },
         )
