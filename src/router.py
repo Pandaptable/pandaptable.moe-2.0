@@ -65,7 +65,7 @@ async def root(request: Request):
 
 @app.get("/version")
 async def version_handler():
-    return f"Version: {website.version}\nUp since: {website.up_since} (JST)"
+    return f"Version: {website.version}\nUp since: {website.up_since} (UTC)"
 
 
 @app.get("/s/{code}")
